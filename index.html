@@ -39,20 +39,20 @@
         .spot-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;}
         .spot-desc { font-size: 0.9rem; color: #555; line-height: 1.5; margin-bottom: 10px;}
         
-        /* 地鐵交通顏色標籤 (新功能) */
+        /* 地鐵交通顏色標籤 */
         .subway { padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; color: white; display: inline-block; margin-bottom: 6px; }
         .bg-walk { background-color: #E0E0E0; color: #333; }
         .bg-car { background-color: #607D8B; }
         .bg-bus { background-color: #00BCD4; }
-        .bg-jr-sobu { background-color: #FBD100; color: #333; } /* JR總武緩行線 */
-        .bg-jr-rapid { background-color: #003399; } /* JR總武快速/橫須賀線 */
-        .bg-jr-yama { background-color: #80C241; } /* JR山手線 */
-        .bg-asakusa { background-color: #E85298; } /* 都營淺草線 */
-        .bg-ginza { background-color: #F39700; } /* 東京地鐵銀座線 */
-        .bg-hibiya { background-color: #9CAEB7; } /* 東京地鐵日比谷線 */
-        .bg-hanzomon { background-color: #8F76D6; } /* 東京地鐵半藏門線 */
-        .bg-enoden { background-color: #208846; } /* 江之電 */
-        .bg-shinkansen { background-color: #008000; } /* 新幹線 */
+        .bg-jr-sobu { background-color: #FBD100; color: #333; }
+        .bg-jr-rapid { background-color: #003399; }
+        .bg-jr-yama { background-color: #80C241; }
+        .bg-asakusa { background-color: #E85298; }
+        .bg-ginza { background-color: #F39700; }
+        .bg-hibiya { background-color: #9CAEB7; }
+        .bg-hanzomon { background-color: #8F76D6; }
+        .bg-enoden { background-color: #208846; }
+        .bg-shinkansen { background-color: #008000; }
 
         .nav-info { background: #F5F5F7; padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 10px; }
         .car-code { font-family: monospace; font-size: 1rem; font-weight: bold; color: #D96A59; letter-spacing: 1px; display: block; margin-top: 4px;}
@@ -63,7 +63,7 @@
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); z-index: 100; }
         .nav-item { text-align: center; color: var(--text-sub); font-size: 0.7rem; cursor: pointer; flex: 1; } .nav-item.active { color: var(--primary); font-weight: 600; } .nav-icon { font-size: 1.4rem; display: block; margin-bottom: 2px; }
 
-        /* 記帳本樣式縮減版以省字數 */
+        /* 記帳本樣式 */
         .accounting-panel{padding:20px;}.summary-card{background:var(--primary);color:white;padding:20px;border-radius:16px;margin-bottom:20px;text-align:center;box-shadow:0 4px 15px rgba(155,133,121,0.3);}.total-amount{font-size:2rem;font-family:serif;margin:10px 0;}.balance-info{font-size:0.9rem;background:rgba(255,255,255,0.2);padding:8px;border-radius:8px;}.add-expense-form{background:#FFF;padding:15px;border-radius:12px;margin-bottom:20px;border:1px solid var(--border);}.form-group{margin-bottom:12px;}.form-group label{display:block;font-size:0.8rem;color:var(--text-sub);margin-bottom:5px;}.form-group input,.form-group select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:1rem;-webkit-appearance:none;}.btn-submit{width:100%;padding:12px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:1rem;font-weight:bold;}.expense-item{background:#FFF;padding:12px;border-radius:8px;border-bottom:1px solid #F0F0F0;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}.exp-detail{display:flex;flex-direction:column;}.exp-title{font-weight:600;font-size:0.95rem;}.exp-meta{font-size:0.75rem;color:var(--text-sub);margin-top:2px;}.exp-price{font-weight:bold;font-family:monospace;font-size:1.1rem;}
     </style>
 </head>
@@ -193,7 +193,7 @@
     <div id="view-accounting" style="display: none;">
         <div class="accounting-panel">
             <div class="summary-card"><div style="font-size:0.9rem; opacity:0.8;">總花費 (TWD)</div><div class="total-amount" id="calc-total-twd">$0</div><div class="balance-info" id="calc-balance">目前無欠款</div></div>
-            <div class="add-expense-form"><h3 style="margin-bottom: 15px; font-size: 1.1rem;">📝 記一筆</h3><div class="form-group"><label>項目名稱</label><input type="text" id="exp-name" placeholder="例如：晚餐-不動茶屋"></div><div class="form-group"><label>金額 (日幣 JPY)</label><input type="number" id="exp-amount" placeholder="輸入日幣金額"></div><div style="display: flex; gap: 10px;"><div class="form-group" style="flex: 1;"><label>誰先付款？</label><select id="exp-payer"><option value="E">E</option><option value="K">K</option></select></div><div class="form-group" style="flex: 1;"><label>誰要分攤？</label><select id="exp-split"><option value="Both">共同平分</option><option value="E">僅 E 負擔</option><option value="K">僅 K 負擔</option></select></div></div><div class="form-group"><label>匯率設定</label><input type="number" id="exp-rate" value="0.21" step="0.001"></div><button class="btn-submit" onclick="addExpense()">儲存至單機紀錄</button></div>
+            <div class="add-expense-form"><h3 style="margin-bottom: 15px; font-size: 1.1rem;">📝 記一筆</h3><div class="form-group"><label>項目名稱</label><input type="text" id="exp-name" placeholder="例如：晚餐-不動茶屋"></div><div class="form-group"><label>金額 (日幣 JPY)</label><input type="number" id="exp-amount" placeholder="輸入日幣金額"></div><div style="display: flex; gap: 10px;"><div class="form-group" style="flex: 1;"><label>誰先付款？</label><select id="exp-payer"><option value="E">E</option><option value="K">K</option></select></div><div class="form-group" style="flex: 1;"><label>誰要分攤？</label><select id="exp-split"><option value="Both">共同平分</option><option value="E">僅 E 負擔</option><option value="K">僅 K 負擔</option></select></div></div><div class="form-group"><label>匯率設定</label><input type="number" id="exp-rate" value="0.21" step="0.001"></div><button class="btn-submit" onclick="addExpense()">儲存並上傳至試算表</button></div>
             <h3 style="margin-bottom: 10px; font-size: 1rem; color:var(--text-sub);">消費明細</h3><div class="expense-list" id="expense-list-container"></div>
         </div>
     </div>
@@ -260,11 +260,40 @@
             if (netOwe > 0) balanceEl.innerHTML = `⚠️ 結算：<b>E 需給 K</b> NT$ ${Math.round(netOwe)}`; else if (netOwe < 0) balanceEl.innerHTML = `⚠️ 結算：<b>K 需給 E</b> NT$ ${Math.round(Math.abs(netOwe))}`; else balanceEl.innerHTML = `✅ 目前雙方互不相欠`;
         }
         function addExpense() {
-            const name = document.getElementById('exp-name').value; const amount = parseFloat(document.getElementById('exp-amount').value);
-            const payer = document.getElementById('exp-payer').value; const split = document.getElementById('exp-split').value; const rate = parseFloat(document.getElementById('exp-rate').value);
+            const name = document.getElementById('exp-name').value; 
+            const amount = parseFloat(document.getElementById('exp-amount').value);
+            const payer = document.getElementById('exp-payer').value; 
+            const split = document.getElementById('exp-split').value; 
+            const rate = parseFloat(document.getElementById('exp-rate').value);
+            
             if (!name || isNaN(amount)) return alert("請輸入名稱與金額！");
-            expenses.push({ name, amount, payer, split, rate }); localStorage.setItem('trip_expenses', JSON.stringify(expenses));
-            document.getElementById('exp-name').value = ''; document.getElementById('exp-amount').value = ''; renderExpenses();
+
+            // 計算折合台幣
+            const costTWD = Math.round(amount * rate);
+
+            // 1. 存入單機版 (維持 App 畫面即時更新)
+            expenses.push({ name, amount, payer, split, rate }); 
+            localStorage.setItem('trip_expenses', JSON.stringify(expenses));
+            document.getElementById('exp-name').value = ''; 
+            document.getElementById('exp-amount').value = ''; 
+            renderExpenses();
+
+            // 2. 背景發送到共用 Google 試算表
+            // ⚠️⚠️⚠️ 記得在這裡換成你專屬的 Google Apps Script 網址 ⚠️⚠️⚠️
+            const googleSheetUrl = "https://script.google.com/macros/s/AKfycbxUbeBbxpu_tlcKTrJIhLM8XTe_HkPtxPGudPcpRKnn6JqBjh4EeybPlQlJKrZ6SP-Cbg/exec";
+            
+            const postData = { name: name, amount: amount, payer: payer, split: split, rate: rate, costTWD: costTWD };
+
+            fetch(googleSheetUrl, {
+                method: 'POST',
+                mode: 'no-cors', // 避免網頁阻擋跨網域請求
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(postData)
+            }).then(() => {
+                console.log("已同步至 Google 試算表！");
+            }).catch(err => {
+                console.error("同步失敗", err);
+            });
         }
         function deleteExpense(index) { expenses.splice(index, 1); localStorage.setItem('trip_expenses', JSON.stringify(expenses)); renderExpenses(); }
         renderExpenses();
