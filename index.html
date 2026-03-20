@@ -39,20 +39,8 @@
         .spot-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;}
         .spot-desc { font-size: 0.9rem; color: #555; line-height: 1.5; margin-bottom: 10px;}
         
-        /* 地鐵交通顏色標籤 */
         .subway { padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; color: white; display: inline-block; margin-bottom: 6px; }
-        .bg-walk { background-color: #E0E0E0; color: #333; }
-        .bg-car { background-color: #607D8B; }
-        .bg-bus { background-color: #00BCD4; }
-        .bg-jr-sobu { background-color: #FBD100; color: #333; }
-        .bg-jr-rapid { background-color: #003399; }
-        .bg-jr-yama { background-color: #80C241; }
-        .bg-asakusa { background-color: #E85298; }
-        .bg-ginza { background-color: #F39700; }
-        .bg-hibiya { background-color: #9CAEB7; }
-        .bg-hanzomon { background-color: #8F76D6; }
-        .bg-enoden { background-color: #208846; }
-        .bg-shinkansen { background-color: #008000; }
+        .bg-walk { background-color: #E0E0E0; color: #333; } .bg-car { background-color: #607D8B; } .bg-bus { background-color: #00BCD4; } .bg-jr-sobu { background-color: #FBD100; color: #333; } .bg-jr-rapid { background-color: #003399; } .bg-jr-yama { background-color: #80C241; } .bg-asakusa { background-color: #E85298; } .bg-ginza { background-color: #F39700; } .bg-hibiya { background-color: #9CAEB7; } .bg-hanzomon { background-color: #8F76D6; } .bg-enoden { background-color: #208846; } .bg-shinkansen { background-color: #008000; }
 
         .nav-info { background: #F5F5F7; padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 10px; }
         .car-code { font-family: monospace; font-size: 1rem; font-weight: bold; color: #D96A59; letter-spacing: 1px; display: block; margin-top: 4px;}
@@ -60,11 +48,21 @@
         .guide-box { background-color: #FAF8F5; padding: 10px 12px; border-radius: 8px; margin-top: 6px; font-size: 0.85rem; line-height: 1.5; color: #444; border-left: 3px solid var(--primary);}
         .tag { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; color: white; display: inline-block; margin-bottom: 4px; margin-right: 4px;}
         .tag.food { background-color: var(--tag-food); } .tag.menu { background-color: var(--tag-menu); } .tag.souvenir { background-color: var(--tag-souvenir); } .tag.booking { background-color: var(--tag-booking); }
+        
+        /* 底部四格導航 */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); z-index: 100; }
-        .nav-item { text-align: center; color: var(--text-sub); font-size: 0.7rem; cursor: pointer; flex: 1; } .nav-item.active { color: var(--primary); font-weight: 600; } .nav-icon { font-size: 1.4rem; display: block; margin-bottom: 2px; }
+        .nav-item { text-align: center; color: var(--text-sub); font-size: 0.65rem; cursor: pointer; flex: 1; } .nav-item.active { color: var(--primary); font-weight: 600; } .nav-icon { font-size: 1.3rem; display: block; margin-bottom: 2px; }
 
-        /* 記帳本樣式 */
         .accounting-panel{padding:20px;}.summary-card{background:var(--primary);color:white;padding:20px;border-radius:16px;margin-bottom:20px;text-align:center;box-shadow:0 4px 15px rgba(155,133,121,0.3);}.total-amount{font-size:2rem;font-family:serif;margin:10px 0;}.balance-info{font-size:0.9rem;background:rgba(255,255,255,0.2);padding:8px;border-radius:8px;}.add-expense-form{background:#FFF;padding:15px;border-radius:12px;margin-bottom:20px;border:1px solid var(--border);}.form-group{margin-bottom:12px;}.form-group label{display:block;font-size:0.8rem;color:var(--text-sub);margin-bottom:5px;}.form-group input,.form-group select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:1rem;-webkit-appearance:none;}.btn-submit{width:100%;padding:12px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:1rem;font-weight:bold;}.expense-item{background:#FFF;padding:12px;border-radius:8px;border-bottom:1px solid #F0F0F0;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}.exp-detail{display:flex;flex-direction:column;}.exp-title{font-weight:600;font-size:0.95rem;}.exp-meta{font-size:0.75rem;color:var(--text-sub);margin-top:2px;}.exp-price{font-weight:bold;font-family:monospace;font-size:1.1rem;}
+        
+        /* 票券庫專屬樣式 */
+        .ticket-list { padding: 20px; }
+        .ticket-item { display: flex; align-items: center; gap: 15px; padding: 16px; background: #FFF; border-radius: 12px; text-decoration: none; color: var(--text-main); margin-bottom: 12px; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .ticket-item:active { background: #F5F5F7; }
+        .ticket-icon { font-size: 1.8rem; }
+        .ticket-text { display: flex; flex-direction: column; }
+        .ticket-name { font-weight: 600; font-size: 1rem; }
+        .ticket-sub { font-size: 0.75rem; color: var(--text-sub); margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -79,7 +77,6 @@
     </div>
 
     <div id="view-itinerary" style="display: block;">
-        
         <div id="d1" class="tab-content active">
             <div class="day-header"><div class="day-title">Day 1｜抵達與河口湖自駕</div><div class="weather-box" id="w-d1">☀️ 載入氣象中...</div></div>
             <div class="timeline">
@@ -90,7 +87,6 @@
                 <div class="stop"><div class="time">20:00</div><div class="spot-card"><div class="subway bg-car">🚗 自駕</div><div class="spot-title">入住：シャーメゾンfunatsu</div></div></div>
             </div>
         </div>
-
         <div id="d2" class="tab-content">
             <div class="day-header"><div class="day-title">Day 2｜富士五湖深度自駕</div><div class="weather-box" id="w-d2">☀️ 載入氣象中...</div></div>
             <div class="timeline">
@@ -101,7 +97,6 @@
                 <div class="stop"><div class="time">19:00</div><div class="spot-card"><div class="subway bg-car">🚗 自駕</div><div class="spot-title">超市：OGINO 河口湖店</div><div class="nav-info">📍 車機：<span class="car-code">0555-72-6100</span></div></div></div>
             </div>
         </div>
-
         <div id="d3" class="tab-content">
             <div class="day-header"><div class="day-title">Day 3｜新宿潮流與夜生活</div><div class="weather-box" id="w-d3">☀️ 載入氣象中...</div></div>
             <div class="timeline">
@@ -116,7 +111,6 @@
                 <div class="stop"><div class="time">21:00</div><div class="spot-card"><div class="subway bg-jr-sobu">🟨 JR總武線 (往錦糸町)</div><div class="spot-title">7. 宵夜：麵匠竹虎</div><div class="spot-desc">入住錦糸町後，來一碗熱騰騰知名拉麵</div></div></div>
             </div>
         </div>
-
         <div id="d4" class="tab-content">
             <div class="day-header"><div class="day-title">Day 4｜淺草上野與銀座</div><div class="weather-box" id="w-d4">☀️ 載入氣象中...</div></div>
             <div class="timeline">
@@ -133,7 +127,6 @@
                 <div class="stop"><div class="time">20:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">10. 晚餐：五代目 花山烏龍麵</div><div class="guide-box"><span class="tag menu">必點菜單</span> 鬼ひも川 (鬼紐川寬扁麵)！排隊大挑戰</div></div></div>
             </div>
         </div>
-
         <div id="d5" class="tab-content">
             <div class="day-header"><div class="day-title">Day 5｜原宿表參道與澀谷</div><div class="weather-box" id="w-d5">☀️ 載入氣象中...</div></div>
             <div class="timeline">
@@ -152,7 +145,6 @@
                 <div class="stop"><div class="time">20:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">11. MEGA 唐吉訶德 澀谷</div><div class="spot-desc">24H 超大驚安殿堂，準備大掃貨！</div></div></div>
             </div>
         </div>
-
         <div id="d6" class="tab-content">
             <div class="day-header"><div class="day-title">Day 6｜石打丸山滑雪</div><div class="weather-box" id="w-d6">☀️ 載入氣象中...</div></div>
             <div class="timeline">
@@ -163,7 +155,6 @@
                 <div class="stop"><div class="time">11:00</div><div class="spot-card"><div class="subway bg-walk">🏂 滑雪</div><div class="spot-title">石打丸山盡情滑雪</div><div class="spot-desc">享受新潟的粉雪，結束後搭乘新幹線返回</div></div></div>
             </div>
         </div>
-
         <div id="d7" class="tab-content">
             <div class="day-header"><div class="day-title">Day 7｜鎌倉與江之島</div><div class="weather-box" id="w-d7">☀️ 載入氣象中...</div></div>
             <div class="timeline">
@@ -177,16 +168,15 @@
                 <div class="stop"><div class="time">17:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">7. 晚餐：魚見亭</div><div class="guide-box"><span class="tag food">必吃海鮮</span> 位於江之島上，吹海風看絕美夕陽！</div></div></div>
             </div>
         </div>
-
     </div>
 
     <div id="view-maps" style="display: none; padding: 20px;">
         <div class="day-title" style="text-align: center; margin-bottom: 20px;">🗺️ 每日全行程導航包</div>
-        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">🗻 D1 東京河口湖</div><a href="請在這裡貼上D1網址" target="_blank" class="btn-maps-main">📍 Google マップでルートを表示する</a></div>
-        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">🚗 D2 富士五湖</div><a href="請在這裡貼上D2網址" target="_blank" class="btn-maps-main">👉 點我開啟 Google 地圖 D2 導航路線</a></div>
-        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">🛍️ D3 新宿</div><a href="請在這裡貼上D3網址" target="_blank" class="btn-maps-main">👉 點我開啟：新宿無敵逛街步行導航</a></div>
+        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">🗻 D1 東京河口湖</div><a href="https://www.google.com/maps/dir/Toyota+Rent+a+Car+-+Fuji-Kawaguchiko,+4657+%E8%88%B9%E6%B4%A5,+%E5%AF%8C%E5%A3%AB%E6%B2%B3%E5%8F%A3%E6%B9%96%E7%94%BA+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/Lawson+Lake+Kawaguchi+Ohashi,+6708-1+%E8%88%B9%E6%B4%A5,+%E5%AF%8C%E5%A3%AB%E6%B2%B3%E5%8F%A3%E6%B9%96%E7%94%BA+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/Herb+Garden+Tabinikki+Fuji-Kawaguchiko+Garden,+1996+%E8%88%B9%E6%B4%A5,+%E5%AF%8C%E5%A3%AB%E6%B2%B3%E5%8F%A3%E6%B9%96%E7%94%BA+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/%E6%97%A5%E6%9C%AC,+%E5%B1%B1%E6%A2%A8%E7%9C%8C%E5%AF%8C%E5%A3%AB%E5%90%89%E7%94%B0%E5%B8%82%E4%B8%AD%E6%9B%BD%E6%A0%B9%EF%BC%91%E4%B8%81%E7%9B%AE%EF%BC%94%E2%88%92%EF%BC%92%EF%BC%92,+%E5%AF%8C%E5%A3%AB%E5%90%89%E7%94%B0%E6%9C%AC%E7%94%BA%E9%80%9A%E3%82%8A%E5%95%86%E5%BA%97%E8%A1%97/data=!4m26!4m25!1m5!1m1!19sChIJkd2ZRpxgGWAR_zVPplpxggA!2m2!1d138.7728715!2d35.4977242!1m5!1m1!19sChIJ6fDgwjJeGWARqTOxMdPk2i0!2m2!1d138.7604767!2d35.506432!1m5!1m1!19sChIJ2SuIQVphGWARFQZrBwg3Tag!2m2!1d138.7557865!2d35.4930644!1m5!1m1!19sChIJ8dblRABhGWAR473Mky_3Cjw!2m2!1d138.7991707!2d35.4848269!3e0?authuser=2" target="_blank" class="btn-maps-main">📍 Google マップでルートを表示する</a></div>
+        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">🚗 D2 富士五湖</div><a href="https://www.google.com/maps/dir/%E6%97%A5%E6%9C%AC,+%E5%B1%B1%E6%A2%A8%E7%9C%8C%E5%B1%B1%E4%B8%AD%E6%B9%96%E6%9D%91%E5%B1%B1%E4%B8%AD%EF%BC%92%EF%BC%90%EF%BC%97%E2%88%92%EF%BC%97,+AMAAMA+BAR%26CAFE+LOUNGE/%E6%97%A5%E6%9C%AC,+%E5%B1%B1%E6%A2%A8%E7%9C%8C%E5%B1%B1%E4%B8%AD%E6%B9%96%E6%9D%91%E5%B9%B3%E9%87%8E%EF%BC%95%EF%BC%90%EF%BC%96%E2%88%92%EF%BC%91,+%E5%B1%B1%E4%B8%AD,+Lake+Yamanakako+Pleasure+Boat+%22Swan+Lake%22/Hirano+beach,+13+%E5%B9%B3%E9%87%8E,+%E5%B1%B1%E4%B8%AD%E6%B9%96%E6%9D%91+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/Oshino+hakkai,+Shibokusa,+Oshino,+Yamanashi,+Japan/FamilyMart,+481-21+%E9%BA%93,+%E5%AF%8C%E5%A3%AB%E5%AE%AE%E5%B8%82+%E9%9D%99%E5%B2%A1%E7%9C%8C,+Japan/Yamadaya+Hotel,+478+%E7%B2%BE%E9%80%B2,+%E5%AF%8C%E5%A3%AB%E6%B2%B3%E5%8F%A3%E6%B9%96%E7%94%BA+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/OGINO+Kawaguchiko+Store,+545%EF%BD%B03+%E8%88%B9%E6%B4%A5,+%E5%AF%8C%E5%A3%AB%E6%B2%B3%E5%8F%A3%E6%B9%96%E7%94%BA+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/data=!4m44!4m43!1m5!1m1!19sChIJ33H_bzRlGWARH7ioeLaTEdQ!2m2!1d138.85504799999998!2d35.418251!1m5!1m1!19sChIJYxe0FQhlGWAR3xp8OZOEYAw!2m2!1d138.8509196!2d35.422633!1m5!1m1!19sChIJNxzQjuxvGWARSiMK1UFfoa4!2m2!1d138.9008237!2d35.4247002!1m5!1m1!19sChIJK4SZn4VmGWARcZ-vsGukOhY!2m2!1d138.83247409999998!2d35.4600675!1m5!1m1!19sChIJi7bsHyTdG2ART1x9Eobdj3Q!2m2!1d138.5728658!2d35.3853657!1m5!1m1!19sChIJ3WT5I4nmG2AR9n76_zzv1Gk!2m2!1d138.60272709999998!2d35.491522599999996!1m5!1m1!19sChIJ_0Nn5dJfGWARTXDoh0QhJyE!2m2!1d138.7575077!2d35.5017423!3e0?authuser=2" target="_blank" class="btn-maps-main">👉 點我開啟 Google 地圖 D2 導航路線</a></div>
+        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">🛍️ D3 新宿</div><a href="https://www.google.com/maps/dir/Lumine+Shinjuku+LUMINE+2,+%EF%BC%93%E4%B8%81%E7%9B%AE-%EF%BC%93%EF%BC%98-2+%E6%96%B0%E5%AE%BF,+%E6%96%B0%E5%AE%BF%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/LUMINE+EST+Shinjuku,+%EF%BC%93%E4%B8%81%E7%9B%AE-%EF%BC%93%EF%BC%98-1+%E6%96%B0%E5%AE%BF,+%E6%96%B0%E5%AE%BF%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/%E6%97%A5%E6%9C%AC,+%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E6%96%B0%E5%AE%BF%EF%BC%93%E4%B8%81%E7%9B%AE%EF%BC%92%EF%BC%93%E2%88%92%EF%BC%91%EF%BC%98+%E6%9D%B1%E6%96%B0%E5%AE%BF%E3%83%93%E3%83%AB+%E3%82%AF%E3%83%AD%E3%82%B9,+RF,+Cross+Shinjuku+Vision/KIDDYLAND+Shinjuku,+%E3%82%AA%E3%82%AB%E3%83%80%E3%83%A4%E3%83%93%E3%83%AB1F%EF%BD%9E4F,+%EF%BC%93%E4%B8%81%E7%9B%AE-%EF%BC%92%EF%BC%93-17+%E6%96%B0%E5%AE%BF,+%E6%96%B0%E5%AE%BF%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/Hanazono+Shrine,+%EF%BC%95%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%97-3+%E6%96%B0%E5%AE%BF,+%E6%96%B0%E5%AE%BF%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/Tokyu+Kabukicho+Tower,+%EF%BC%91%E4%B8%81%E7%9B%AE-%EF%BC%92%EF%BC%99-1+%E6%AD%8C%E8%88%9E%E4%BC%8E%E7%94%BA,+%E6%96%B0%E5%AE%BF%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/data=!4m38!4m37!1m5!1m1!19sChIJpT6_gNCMGGARgYQPQwXP3g0!2m2!1d139.7010276!2d35.689478699999995!1m5!1m1!19sChIJ_TibA9qMGGARNYmVIFyGU9k!2m2!1d139.70114189999998!2d35.691250499999995!1m5!1m1!19sChIJrwWR35uNGGARG7Svj20aEfM!2m2!1d139.7008107!2d35.692642!1m5!1m1!19sChIJ2YhHaACNGGARCoFxF7YqstA!2m2!1d139.7009716!2d35.6929851!1m5!1m1!19sChIJK9584NuMGGARVKfZjpYoQDs!2m2!1d139.7053279!2d35.6935311!1m5!1m1!19sChIJP6oqgv2NGGARqV5VFswMftQ!2m2!1d139.70058939999998!2d35.6957513!3e2?authuser=2" target="_blank" class="btn-maps-main">👉 點我開啟：新宿無敵逛街步行導航</a></div>
         <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">👘 D4 淺草上野銀座</div><a href="請在這裡貼上D4網址" target="_blank" class="btn-maps-main">➡️ 點此一鍵打開 銀座步行路線</a></div>
-        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">👗 D5 原宿表參澀谷</div><a href="請在這裡貼上D5原宿網址" target="_blank" class="btn-maps-main" style="margin-bottom: 8px;">➡️ 點我開啟 E&K 原宿全行程地圖</a><a href="請在這裡貼上D5澀谷網址" target="_blank" class="btn-maps-main">➡️ 點我開啟 E&K 澀谷全行程地圖</a></div>
+        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">👗 D5 原宿表參澀谷</div><a href="https://www.google.com/maps/dir/Harajuku+Station,+1+Chome+Jingumae,+Shibuya,+Tokyo,+Japan/%E6%97%A5%E6%9C%AC,+%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%8B%E8%B0%B7%E5%8C%BA%E7%A5%9E%E5%AE%AE%E5%89%8D%EF%BC%91%E4%B8%81%E7%9B%AE%EF%BC%91%EF%BC%94%E2%88%92%EF%BC%93%EF%BC%90+WITH+HARAJUKU+1F,+and+ST+TOKYO/%EF%BC%A0cosme+TOKYO,+%EF%BC%91%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%94-27+%E7%A5%9E%E5%AE%AE%E5%89%8D,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/Takeshita+Street,+%EF%BC%91%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%96-6+%E7%A5%9E%E5%AE%AE%E5%89%8D,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/%E6%97%A5%E6%9C%AC,+%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%8B%E8%B0%B7%E5%8C%BA%E7%A5%9E%E5%AE%AE%E5%89%8D%EF%BC%91%E4%B8%81%E7%9B%AE%EF%BC%98%E2%88%92%EF%BC%91+Daisy%E5%8E%9F%E5%AE%BF,+WIGGLE+WIGGLE.ZIP+HARAJUKU/RAGTAG,+%E3%83%92%E3%83%A5%E3%83%BC%E3%83%AA%E3%83%83%E3%82%AF%E7%A5%9E%E5%AE%AE%E5%89%8D%E3%83%93%E3%83%AB+1F%E3%83%BB2F,+%EF%BC%95%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%97-9+%E7%A5%9E%E5%AE%AE%E5%89%8D,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/niko+and+...+TOKYO,+1F2F,+%EF%BC%96%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%92-20+%E7%A5%9E%E5%AE%AE%E5%89%8D,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/data=!4m44!4m43!1m5!1m1!19sChIJ_yy1ybqMGGAR0tPR4qiHDVY!2m2!1d139.7024662!2d35.670090099999996!1m5!1m1!19sChIJV4XZgvqNGGARZ1tc_80ZhhM!2m2!1d139.7031067!2d35.6705208!1m5!1m1!19sChIJXw6ieKKNGGARej0HfrnPlPE!2m2!1d139.7031743!2d35.6701458!1m5!1m1!19sChIJL51pWnmNGGAR-e2hoAztmTQ!2m2!1d139.7046761!2d35.6712601!1m5!1m1!19sChIJY5AQ78-NGGARX4jyGpad6GI!2m2!1d139.7059855!2d35.6705168!1m5!1m1!19sChIJl05op6aMGGARqtcwxvIoG9Y!2m2!1d139.7052181!2d35.6657568!1m5!1m1!19sChIJAQCnnaaMGGARv3e26w2Kczk!2m2!1d139.7044202!2d35.6665838!3e2?authuser=2" target="_blank" class="btn-maps-main" style="margin-bottom: 8px;">➡️ 點我開啟 E&K 原宿全行程地圖</a><a href="https://www.google.com/maps/dir/Shibuya+Center-Gai,+Udagawacho,+Shibuya,+Tokyo,+Japan/FREAK'S+STORE+Shibuya,+M%E3%83%93%E3%83%AB,+%EF%BC%91%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%93-1+%E7%A5%9E%E5%8D%97,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/Shibuya+109,+%EF%BC%92%E4%B8%81%E7%9B%AE-%EF%BC%92%EF%BC%99-1+%E9%81%93%E7%8E%84%E5%9D%82,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/MEGA+Don+Quijote,+%EF%BC%92%EF%BC%98-6+%E5%AE%87%E7%94%B0%E5%B7%9D%E7%94%BA,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/data=!4m26!4m25!1m5!1m1!19sChIJI0xlZamMGGARVz2RF8H9Vz8!2m2!1d139.698578!2d35.6604139!1m5!1m1!19sChIJUzfHlaiMGGARpLxcCvZnorQ!2m2!1d139.7004055!2d35.662956199999996!1m5!1m1!19sChIJhxxszamMGGARcuAXpFunolU!2m2!1d139.698728!2d35.6595771!1m5!1m1!19sChIJr4J6pKmMGGARdQLOgrzToH4!2m2!1d139.6978172!2d35.6603873!3e2?authuser=2" target="_blank" class="btn-maps-main">➡️ 點我開啟 E&K 澀谷全行程地圖</a></div>
         <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">🌊 D7 鎌倉・江之島</div><a href="請在這裡貼上D7網址" target="_blank" class="btn-maps-main">➡️ 點我開啟鎌倉・江之島全行程地圖</a></div>
     </div>
 
@@ -198,10 +188,58 @@
         </div>
     </div>
 
+    <div id="view-tickets" style="display: none;">
+        <div class="ticket-list">
+            <h2 class="day-title" style="text-align: center; margin-bottom: 20px;">🎫 專屬車票與文件庫</h2>
+            
+            <a href="TOKYO.pdf" target="_blank" class="ticket-item">
+                <div class="ticket-icon">📄</div>
+                <div class="ticket-text">
+                    <span class="ticket-name">打開 E&K 旅遊秘笈</span>
+                    <span class="ticket-sub">你們精心整理的行程主體文件</span>
+                </div>
+            </a>
+
+            <a href="D1_N'EX.pdf" target="_blank" class="ticket-item">
+                <div class="ticket-icon">🚆</div>
+                <div class="ticket-text">
+                    <span class="ticket-name">3/28 N'EX 特快車票</span>
+                    <span class="ticket-sub">成田機場前往東京車站</span>
+                </div>
+            </a>
+
+            <a href="東京to河口湖_bus.pdf" target="_blank" class="ticket-item">
+                <div class="ticket-icon">🚌</div>
+                <div class="ticket-text">
+                    <span class="ticket-name">3/28 東京至河口湖巴士</span>
+                    <span class="ticket-sub">Willer 巴士電子票券</span>
+                </div>
+            </a>
+
+            <a href="河口湖to東京_bus.pdf" target="_blank" class="ticket-item">
+                <div class="ticket-icon">🚌</div>
+                <div class="ticket-text">
+                    <span class="ticket-name">3/30 河口湖至新宿巴士</span>
+                    <span class="ticket-sub">富士急行巴士回程車票</span>
+                </div>
+            </a>
+
+            <a href="錦系町to機場_bus.pdf" target="_blank" class="ticket-item">
+                <div class="ticket-icon">✈️</div>
+                <div class="ticket-text">
+                    <span class="ticket-name">4/6 錦糸町至羽田機場巴士</span>
+                    <span class="ticket-sub">最後一天的回程機場巴士</span>
+                </div>
+            </a>
+            <p style="text-align:center; font-size:0.8rem; color:var(--text-sub); margin-top:20px;">💡 點擊上方卡片即可直接開啟 PDF 檔案</p>
+        </div>
+    </div>
+
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-itinerary" onclick="switchMainTab('itinerary')"><span class="nav-icon">🗺️</span>行程</div>
-        <div class="nav-item" id="nav-maps" onclick="switchMainTab('maps')"><span class="nav-icon">📍</span>導航總表</div>
+        <div class="nav-item" id="nav-maps" onclick="switchMainTab('maps')"><span class="nav-icon">📍</span>導航</div>
         <div class="nav-item" id="nav-accounting" onclick="switchMainTab('accounting')"><span class="nav-icon">💰</span>記帳本</div>
+        <div class="nav-item" id="nav-tickets" onclick="switchMainTab('tickets')"><span class="nav-icon">🎫</span>票券庫</div>
     </div>
 
     <script>
@@ -218,9 +256,12 @@
             document.getElementById('dateNav').style.display = tabName === 'itinerary' ? 'flex' : 'none';
             document.getElementById('view-maps').style.display = tabName === 'maps' ? 'block' : 'none';
             document.getElementById('view-accounting').style.display = tabName === 'accounting' ? 'block' : 'none';
+            document.getElementById('view-tickets').style.display = tabName === 'tickets' ? 'block' : 'none';
+            
             document.getElementById('nav-itinerary').classList.toggle('active', tabName === 'itinerary');
             document.getElementById('nav-maps').classList.toggle('active', tabName === 'maps');
             document.getElementById('nav-accounting').classList.toggle('active', tabName === 'accounting');
+            document.getElementById('nav-tickets').classList.toggle('active', tabName === 'tickets');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         async function fetchLiveWeather() {
@@ -268,25 +309,20 @@
             
             if (!name || isNaN(amount)) return alert("請輸入名稱與金額！");
 
-            // 計算折合台幣
             const costTWD = Math.round(amount * rate);
 
-            // 1. 存入單機版 (維持 App 畫面即時更新)
             expenses.push({ name, amount, payer, split, rate }); 
             localStorage.setItem('trip_expenses', JSON.stringify(expenses));
             document.getElementById('exp-name').value = ''; 
             document.getElementById('exp-amount').value = ''; 
             renderExpenses();
 
-            // 2. 背景發送到共用 Google 試算表
-            // ⚠️⚠️⚠️ 記得在這裡換成你專屬的 Google Apps Script 網址 ⚠️⚠️⚠️
             const googleSheetUrl = "https://script.google.com/macros/s/AKfycbxUbeBbxpu_tlcKTrJIhLM8XTe_HkPtxPGudPcpRKnn6JqBjh4EeybPlQlJKrZ6SP-Cbg/exec";
-            
             const postData = { name: name, amount: amount, payer: payer, split: split, rate: rate, costTWD: costTWD };
 
             fetch(googleSheetUrl, {
                 method: 'POST',
-                mode: 'no-cors', // 避免網頁阻擋跨網域請求
+                mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(postData)
             }).then(() => {
