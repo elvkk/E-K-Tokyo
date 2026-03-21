@@ -74,6 +74,19 @@
         .ticket-text { display: flex; flex-direction: column; }
         .ticket-name { font-weight: 600; font-size: 1rem; }
         .ticket-sub { font-size: 0.75rem; color: var(--text-sub); margin-top: 4px; }
+
+        /* 必買清單樣式 */
+        .shopping-list { padding: 20px; }
+        .check-item { display: flex; align-items: center; padding: 12px; background: #FFF; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); }
+        .check-item input[type="checkbox"] { margin-right: 12px; width: 20px; height: 20px; accent-color: var(--primary); }
+        .check-item label { flex: 1; font-size: 1rem; transition: color 0.3s, text-decoration 0.3s; }
+        .check-item input[type="checkbox"]:checked + label { text-decoration: line-through; color: var(--text-sub); }
+        .category-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); margin: 15px 0 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        
+        /* 動態新增項目的表單 */
+        .add-shopping-form { display: flex; gap: 10px; margin-bottom: 20px; background: #FFF; padding: 15px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .add-shopping-form input { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
+        .add-shopping-form button { padding: 10px 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -365,7 +378,7 @@
                     </div>
                 </div>
             </div>
-<div id="d5" class="tab-content">
+            <div id="d5" class="tab-content">
                 <div class="day-header"><div class="day-title">Day 5｜原宿表參道與澀谷</div><div class="weather-box" id="w-d5">☀️ 載入氣象中...</div></div>
                 <div class="timeline">
                     <div class="stop">
@@ -709,12 +722,28 @@
             </div>
         </div>
 
+        <div id="view-shopping" style="display: none;">
+            <div class="shopping-list">
+                <h2 class="day-title" style="text-align: center; margin-bottom: 20px;">🛍️ 必買戰利品清單</h2>
+                
+                <div class="add-shopping-form">
+                    <input type="text" id="new-item-input" placeholder="輸入想買的東西...">
+                    <button onclick="addShoppingItem()">新增</button>
+                </div>
+
+                <div id="shopping-items-container">
+                    </div>
+            </div>
+        </div>
+
         <div class="bottom-nav">
             <div class="nav-item active" id="nav-itinerary" onclick="switchMainTab('itinerary')"><span class="nav-icon">🗺️</span>行程</div>
             <div class="nav-item" id="nav-maps" onclick="switchMainTab('maps')"><span class="nav-icon">📍</span>導航</div>
-            <div class="nav-item" id="nav-accounting" onclick="switchMainTab('accounting')"><span class="nav-icon">💰</span>記帳本</div>
-            <div class="nav-item" id="nav-tickets" onclick="switchMainTab('tickets')"><span class="nav-icon">🎫</span>票券庫</div>
+            <div class="nav-item" id="nav-accounting" onclick="switchMainTab('accounting')"><span class="nav-icon">💰</span>記帳</div>
+            <div class="nav-item" id="nav-shopping" onclick="switchMainTab('shopping')"><span class="nav-icon">🛍️</span>必買</div>
+            <div class="nav-item" id="nav-tickets" onclick="switchMainTab('tickets')"><span class="nav-icon">🎫</span>票券</div>
         </div>
+
     </div> <script>
         // 密碼解鎖邏輯
         function checkPassword() {
@@ -723,16 +752,15 @@
             if (pwd === '118620') {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-app').style.display = 'block';
-                // 解鎖後載入天氣與記帳本
                 fetchLiveWeather();
                 renderExpenses();
+                renderShoppingList(); // 解鎖時載入購物清單
             } else {
                 errorMsg.style.display = 'block';
                 document.getElementById('pwd-input').value = '';
             }
         }
         
-        // 監聽 Enter 鍵解鎖
         document.getElementById("pwd-input").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
@@ -754,11 +782,13 @@
             document.getElementById('dateNav').style.display = tabName === 'itinerary' ? 'flex' : 'none';
             document.getElementById('view-maps').style.display = tabName === 'maps' ? 'block' : 'none';
             document.getElementById('view-accounting').style.display = tabName === 'accounting' ? 'block' : 'none';
+            document.getElementById('view-shopping').style.display = tabName === 'shopping' ? 'block' : 'none';
             document.getElementById('view-tickets').style.display = tabName === 'tickets' ? 'block' : 'none';
             
             document.getElementById('nav-itinerary').classList.toggle('active', tabName === 'itinerary');
             document.getElementById('nav-maps').classList.toggle('active', tabName === 'maps');
             document.getElementById('nav-accounting').classList.toggle('active', tabName === 'accounting');
+            document.getElementById('nav-shopping').classList.toggle('active', tabName === 'shopping');
             document.getElementById('nav-tickets').classList.toggle('active', tabName === 'tickets');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -835,22 +865,19 @@
 
             const costTWD = Math.round(amount * rate);
 
-            // 1. 存入單機版 (維持 App 畫面即時更新)
             expenses.push({ name, amount, payer, split, rate }); 
             localStorage.setItem('trip_expenses', JSON.stringify(expenses));
             document.getElementById('exp-name').value = ''; 
             document.getElementById('exp-amount').value = ''; 
             renderExpenses();
 
-            // 2. 背景發送到共用 Google 試算表
-            // ⚠️⚠️⚠️ 記得在這裡換成你專屬的 Google Apps Script 網址 ⚠️⚠️⚠️
             const googleSheetUrl = "https://script.google.com/macros/s/AKfycbxUbeBbxpu_tlcKTrJIhLM8XTe_HkPtxPGudPcpRKnn6JqBjh4EeybPlQlJKrZ6SP-Cbg/exec";
             
             const postData = { name: name, amount: amount, payer: payer, split: split, rate: rate, costTWD: costTWD };
 
             fetch(googleSheetUrl, {
                 method: 'POST',
-                mode: 'no-cors', // 避免網頁阻擋跨網域請求
+                mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(postData)
             }).then(() => {
@@ -865,8 +892,64 @@
             localStorage.setItem('trip_expenses', JSON.stringify(expenses)); 
             renderExpenses(); 
         }
+
+        // 必買清單邏輯
+        let shoppingItems = JSON.parse(localStorage.getItem('trip_shopping_list')) || [
+            { id: 1, text: 'New Balance 990v6 (原宿/澀谷)', checked: false },
+            { id: 2, text: 'Wiggle Wiggle 韓國可愛雜貨 (竹下通)', checked: false },
+            { id: 3, text: '鎌倉紅谷 くるみッ子核桃糕', checked: false },
+            { id: 4, text: 'EVE 止痛藥、合利他命 (阿美橫町)', checked: false }
+        ];
+
+        function renderShoppingList() {
+            const container = document.getElementById('shopping-items-container');
+            container.innerHTML = '';
+            shoppingItems.forEach(item => {
+                container.innerHTML += `
+                    <div class="check-item">
+                        <input type="checkbox" id="shop-${item.id}" ${item.checked ? 'checked' : ''} onchange="toggleShoppingItem(${item.id})">
+                        <label for="shop-${item.id}">${item.text}</label>
+                        <button onclick="deleteShoppingItem(${item.id})" style="background:none; border:none; color:#D96A59; font-size:1.2rem; cursor:pointer;">🗑️</button>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleShoppingItem(id) {
+            const item = shoppingItems.find(i => i.id === id);
+            if (item) {
+                item.checked = !item.checked;
+                localStorage.setItem('trip_shopping_list', JSON.stringify(shoppingItems));
+                renderShoppingList();
+            }
+        }
+
+        function addShoppingItem() {
+            const input = document.getElementById('new-item-input');
+            const text = input.value.trim();
+            if (text) {
+                const newItem = {
+                    id: Date.now(),
+                    text: text,
+                    checked: false
+                };
+                shoppingItems.push(newItem);
+                localStorage.setItem('trip_shopping_list', JSON.stringify(shoppingItems));
+                input.value = '';
+                renderShoppingList();
+            }
+        }
+
+        function deleteShoppingItem(id) {
+            shoppingItems = shoppingItems.filter(item => item.id !== id);
+            localStorage.setItem('trip_shopping_list', JSON.stringify(shoppingItems));
+            renderShoppingList();
+        }
     </script>
 </body>
 </html>
 
 
+
+
+            
