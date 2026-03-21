@@ -260,7 +260,6 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
-        // 你的專屬 Firebase 金鑰
         const firebaseConfig = {
             apiKey: "AIzaSyB7ssGrYVT2ilIYZlgwO2bNnMbG7Bv96rM",
             authDomain: "ek-tokyo.firebaseapp.com",
@@ -401,12 +400,11 @@
             });
         });
 
-        // === FIREBASE 雲端必買清單邏輯 ===
-        const shopCategories = ['東京車站', 'LOFT', '富士山', '澀谷', '新宿', '羽田機場', '原宿', '淺草', "唐吉軻德", "3COIN" , "銀座" , "藥妝"];
+        // === FIREBASE 雲端必買清單邏輯 (使用獨立集合 tokyo_shopping) ===
+        const shopCategories = ['東京車站', 'LOFT', '富士山', '澀谷', '新宿', '羽田機場', '原宿', '淺草'];
         window.currentShopCat = shopCategories[0];
         let shoppingData = {}; 
 
-        // 預設 10 項必買清單
         const defaultShoppingData = [
             { cat: '東京車站', name: '生巧克力厚餅乾 - VANILLBEANS', mapLink: 'https://maps.app.goo.gl/search/Haneda+Airport+Duty+Free' },
             { cat: '東京車站', name: 'GRANSTA 跳跳糖巧克力', mapLink: 'https://maps.app.goo.gl/search/@cosme+TOKYO+Harajuku' },
@@ -421,7 +419,6 @@
             { cat: '淺草', name: 'shishokubar_asakusa 萬用調味料', mapLink: 'https://www.google.com/maps/search/cois+espresso+club+新宿' }
         ];
 
-        // 建立頂部導航
         function buildShopNav() {
             const shopNav = document.getElementById('shopNav');
             shopNav.innerHTML = '';
@@ -441,16 +438,15 @@
         }
         buildShopNav();
 
-        // 監聽 Firebase 購物清單庫變化 (即時同步)
         let isFirstLoad = true;
-        const qShop = query(collection(db, "shopping"), orderBy("createdAt", "asc"));
+        const qShop = query(collection(db, "tokyo_shopping"), orderBy("createdAt", "asc"));
         
         onSnapshot(qShop, async (snapshot) => {
             if(isFirstLoad && snapshot.empty) {
                 console.log("寫入預設資料中...");
                 for(const item of defaultShoppingData) {
-                    await addDoc(collection(db, "shopping"), {
-                        category: item.cat, name: item.name, mapLink: item.link, text: '', img: '', createdAt: serverTimestamp()
+                    await addDoc(collection(db, "tokyo_shopping"), {
+                        category: item.cat, name: item.name, mapLink: item.mapLink, text: '', img: '', createdAt: serverTimestamp()
                     });
                 }
             }
@@ -467,7 +463,6 @@
             renderShoppingList();
         });
 
-        // 渲染購物清單畫面
         function renderShoppingList() {
             const container = document.getElementById('shopping-list-container');
             container.innerHTML = '';
@@ -526,7 +521,7 @@
             if(!name) return alert("請輸入想買的物品名稱！");
             input.value = '';
             
-            await addDoc(collection(db, "shopping"), {
+            await addDoc(collection(db, "tokyo_shopping"), {
                 category: window.currentShopCat, name: name, mapLink: '', text: '', img: '', createdAt: serverTimestamp()
             });
         }
@@ -536,17 +531,17 @@
                 if(imgUrl && imgUrl.startsWith('http')) {
                     try { await deleteObject(ref(storage, imgUrl)); } catch(e) { console.log('刪除照片失敗'); }
                 }
-                await deleteDoc(doc(db, "shopping", id));
+                await deleteDoc(doc(db, "tokyo_shopping", id));
             }
         }
 
         window.updateShopMapLink = async function(id, value) {
-            await updateDoc(doc(db, "shopping", id), { mapLink: value });
+            await updateDoc(doc(db, "tokyo_shopping", id), { mapLink: value });
             setTimeout(() => document.getElementById(`shop-diary-${id}`).style.display = 'block', 500); 
         }
 
         window.updateShopText = async function(id, value) {
-            await updateDoc(doc(db, "shopping", id), { text: value });
+            await updateDoc(doc(db, "tokyo_shopping", id), { text: value });
         }
 
         window.handleShopImageUpload = function(event, id) {
@@ -563,7 +558,7 @@
                     const storageRef = ref(storage, `shopping_images/${id}_${Date.now()}.jpg`);
                     await uploadString(storageRef, dataUrl, 'data_url');
                     const downloadURL = await getDownloadURL(storageRef);
-                    await updateDoc(doc(db, "shopping", id), { img: downloadURL });
+                    await updateDoc(doc(db, "tokyo_shopping", id), { img: downloadURL });
                     document.getElementById(`btn-del-shop-img-${id}`).style.display = 'flex';
                 } catch(error) {
                     alert("上傳失敗，請確認 Firebase Storage 權限是否開啟！");
@@ -581,14 +576,13 @@
                 if(imgUrl && imgUrl.startsWith('http')) {
                     try { await deleteObject(ref(storage, imgUrl)); } catch(e) {}
                 }
-                await updateDoc(doc(db, "shopping", id), { img: '' });
+                await updateDoc(doc(db, "tokyo_shopping", id), { img: '' });
             }
         }
 
-        // === FIREBASE 雲端記帳本邏輯 (E & K 專屬版) ===
+        // === FIREBASE 雲端記帳本邏輯 ===
         let expensesData = [];
 
-        // 監聽 Firebase 專屬的 tokyo_expenses 資料庫
         const qExpense = query(collection(db, "tokyo_expenses"), orderBy("createdAt", "desc"));
         onSnapshot(qExpense, (snapshot) => {
             expensesData = [];
@@ -654,7 +648,6 @@
             
             if (!name || isNaN(amount)) return alert("請輸入名稱與金額！");
 
-            // 上傳至專屬的 Firebase tokyo_expenses 集合
             await addDoc(collection(db, "tokyo_expenses"), {
                 name: name, amount: amount, payer: payer, split: split, rate: rate, createdAt: serverTimestamp()
             });
@@ -678,7 +671,7 @@
                 
                 function formatW(locData, dateStr) {
                     const idx = locData.time.indexOf(dateStr);
-                    if(idx === -1) return null; // 抓不到日期回傳 null
+                    if(idx === -1) return null;
                     const code = locData.weathercode[idx];
                     let icon = '⛅'; if(code <= 3) icon = '☀️'; if(code >= 51 && code <= 67) icon = '🌧️';
                     return `${icon} ${Math.round(locData.temperature_2m_min[idx])}° - ${Math.round(locData.temperature_2m_max[idx])}°C`;
@@ -694,13 +687,12 @@
                         if(weatherStr) {
                             weatherEl.innerText = weatherStr;
                         } else {
-                            weatherEl.style.display = 'none'; // 抓不到就隱藏，不顯示「載入中」
+                            weatherEl.style.display = 'none';
                         }
                     }
                 });
             } catch (e) { 
                 console.log('Weather API Error:', e); 
-                // 發生錯誤時隱藏所有天氣區塊
                 document.querySelectorAll('.weather-box').forEach(el => el.style.display = 'none');
             }
         }
