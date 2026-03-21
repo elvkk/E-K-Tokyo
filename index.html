@@ -371,11 +371,48 @@
             initShoppingList();
         });
 
-        // === 全新：必買清單邏輯 ===
-        const shopCategories = ['富士山', '新宿', '原宿', '表參道', '澀谷', '銀座', '淺草', '東京車站', '鎌倉', 'LOFT', '3Coin', '唐吉軻德'];
+        // === 全新：必買清單邏輯 (含預設資料) ===
+        const shopCategories = ['東京車站', 'LOFT', '富士山', '澀谷', '新宿', '羽田機場', '原宿', '淺草', '表參道', '銀座', '鎌倉', '3Coin', '唐吉軻德'];
         let currentShopCat = shopCategories[0];
-        let shoppingData = JSON.parse(localStorage.getItem('tokyo_shopping_list')) || {};
         
+        // 預設你的 10 個必買清單，並配上 Google Maps 搜尋連結
+        const defaultShoppingData = {
+            '東京車站': [
+                { name: '生巧克力厚餅乾 - VANILLBEANS', mapLink: 'https://www.google.com/maps/search/?api=1&query=VANILLABEANS+東京駅', text: '', img: '' },
+                { name: 'GRANSTA 跳跳糖巧克力', mapLink: 'https://www.google.com/maps/search/?api=1&query=GRANSTA+東京駅', text: '', img: '' }
+            ],
+            'LOFT': [
+                { name: '日本質感磁鐵', mapLink: 'https://www.google.com/maps/search/?api=1&query=ROYCE+羽田空港', text: '', img: '' },
+                { name: 'lipopeel 粉刺清', mapLink: 'https://www.google.com/maps/search/?api=1&query=ROYCE+羽田空港', text: '', img: '' }
+            ],
+            '富士山': [
+                { name: 'Q-STA 一樓 富士山伴手禮', mapLink: 'https://maps.app.goo.gl/search/VANILLABEANS+Tokyo+Station', text: '', img: '' }
+            ],
+            '澀谷': [
+                { name: '唐吉軻德 齒磨牙膏', mapLink: 'https://maps.app.goo.gl/search/GRANSTA+Tokyo', text: '', img: '' },
+                { name: '唐吉軻德 DHC UHA味覺糖 KissMe', mapLink: 'https://maps.app.goo.gl/search/GRANSTA+Tokyo', text: '', img: '' }
+            ],
+            '新宿': [
+                { name: 'cois espresso club - 巴斯克起司蛋糕', mapLink: 'https://maps.app.goo.gl/search/LOFT+Tokyo', text: '', img: '' }
+            ],
+            '羽田機場': [
+                { name: 'ROYCE 開心果', mapLink: 'https://maps.app.goo.gl/search/Q-STA+Fujisan', text: '', img: '' }
+            ],
+            '原宿': [
+                { name: '@cosme防小人噴霧', mapLink: 'https://maps.app.goo.gl/search/MEGA+Don+Quijote+Shibuya', text: '', img: '' }
+            ],
+            '淺草': [
+                { name: 'shishokubar_asakusa 萬用調味料', mapLink: 'https://maps.app.goo.gl/search/cois+espresso+club+Shinjuku', text: '', img: '' }
+            ]
+        };
+
+        // 如果 localStorage 沒有資料，就載入預設資料
+        let shoppingData = JSON.parse(localStorage.getItem('tokyo_shopping_list'));
+        if (!shoppingData) {
+            shoppingData = defaultShoppingData;
+            localStorage.setItem('tokyo_shopping_list', JSON.stringify(shoppingData));
+        }
+
         function initShoppingList() {
             // 確保所有分類都有陣列
             shopCategories.forEach(cat => { if(!shoppingData[cat]) shoppingData[cat] = []; });
