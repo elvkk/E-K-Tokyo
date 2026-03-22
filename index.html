@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>E&K 東京漫遊 (連線版)</title>
+    <link rel="apple-touch-icon" href="ICON.jpg">
+    <meta name="theme-color" content="#FFFFFF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
+    <style>
+        :root { --bg-color: #FAFAFA; --text-main: #2C2C2C; --text-sub: #8E8E93; --primary: #9B8579; --border: #E5E5EA; --tag-food: #D96A59; --tag-menu: #4A6B7C; --tag-souvenir: #78997A; --tag-booking: #D9A05B; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "SF Pro TC", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 90px; }
+        
+        /* 頂部滑動導航列 */
+        .top-nav-slider { display: flex; overflow-x: auto; padding: calc(env(safe-area-inset-top) + 15px) 15px 10px; background: #FFF; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05); scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+        .top-nav-slider::-webkit-scrollbar { display: none; }
+        .nav-slider-item { flex: 0 0 auto; text-align: center; padding: 5px 15px; opacity: 0.5; transition: 0.3s; scroll-snap-align: center; cursor: pointer; white-space: nowrap; }
+        .nav-slider-item.active { opacity: 1; border-bottom: 2px solid var(--primary); font-weight: bold; color: var(--primary); }
+        .date-day { font-size: 0.7rem; color: var(--text-sub); text-transform: uppercase; font-weight: 600; }
+        .date-num { font-size: 1.5rem; font-weight: 400; font-family: serif; margin-top: 2px; }
+        .shop-cat-title { font-size: 1.1rem; padding: 5px 0; }
+
+        .day-header { padding: 20px 20px 10px; background: #FFF; border-bottom: 1px solid var(--border); }
+        .day-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 5px; font-family: serif; letter-spacing: 1px;}
+        .weather-box { font-size: 0.9rem; color: var(--text-sub); display: flex; align-items: center; gap: 5px; }
+
+        .tab-content { display: none; animation: fadeEffect 0.4s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeEffect { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .timeline { padding: 20px; }
+        .stop { position: relative; padding-left: 25px; margin-bottom: 25px; }
+        .stop::before { content: ''; position: absolute; left: 0; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); z-index: 2; }
+        .stop::after { content: ''; position: absolute; left: 4px; top: 15px; bottom: -25px; width: 2px; background: var(--border); z-index: 1; }
+        .stop:last-child::after { display: none; }
+        
+        .time { font-size: 0.8rem; color: var(--text-sub); font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;}
+        .spot-card { background: #FFF; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #F0F0F0; }
+        .spot-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;}
+        .spot-desc { font-size: 0.9rem; color: #555; line-height: 1.5; margin-bottom: 10px;}
+        
+        .subway { padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; color: white; display: inline-block; margin-bottom: 6px; }
+        .bg-walk { background-color: #E0E0E0; color: #333; } .bg-car { background-color: #607D8B; } .bg-bus { background-color: #00BCD4; } .bg-jr-sobu { background-color: #FBD100; color: #333; } .bg-jr-rapid { background-color: #003399; } .bg-jr-yama { background-color: #80C241; } .bg-asakusa { background-color: #E85298; } .bg-ginza { background-color: #F39700; } .bg-hibiya { background-color: #9CAEB7; } .bg-hanzomon { background-color: #8F76D6; } .bg-enoden { background-color: #208846; } .bg-shinkansen { background-color: #008000; }
+
+        .nav-info { background: #F5F5F7; padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 10px; }
+        .car-code { font-family: monospace; font-size: 1rem; font-weight: bold; color: #D96A59; letter-spacing: 1px; display: block; margin-top: 4px;}
+        .btn-maps-main { display: block; text-align: center; background: var(--primary); color: #FFF; padding: 12px; border-radius: 8px; text-decoration: none; font-size: 0.95rem; font-weight: bold; box-shadow: 0 2px 5px rgba(155,133,121,0.4); margin-top:10px;}
+        .guide-box { background-color: #FAF8F5; padding: 10px 12px; border-radius: 8px; margin-top: 6px; font-size: 0.85rem; line-height: 1.5; color: #444; border-left: 3px solid var(--primary);}
+        .tag { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; color: white; display: inline-block; margin-bottom: 4px; margin-right: 4px;}
+        .tag.food { background-color: var(--tag-food); } .tag.menu { background-color: var(--tag-menu); } .tag.souvenir { background-color: var(--tag-souvenir); } .tag.booking { background-color: var(--tag-booking); }
+        
+        /* 底部五格導航 */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); z-index: 100; }
+        .nav-item { text-align: center; color: var(--text-sub); font-size: 0.65rem; cursor: pointer; flex: 1; } .nav-item.active { color: var(--primary); font-weight: 600; } .nav-icon { font-size: 1.3rem; display: block; margin-bottom: 2px; }
+
+        /* 記帳本樣式 */
+        .accounting-panel{padding:20px;}.summary-card{background:var(--primary);color:white;padding:20px;border-radius:16px;margin-bottom:20px;text-align:center;box-shadow:0 4px 15px rgba(155,133,121,0.3);}.total-amount{font-size:2rem;font-family:serif;margin:10px 0;}.balance-info{font-size:0.9rem;background:rgba(255,255,255,0.2);padding:8px;border-radius:8px;}.add-expense-form{background:#FFF;padding:15px;border-radius:12px;margin-bottom:20px;border:1px solid var(--border);}.form-group{margin-bottom:12px;}.form-group label{display:block;font-size:0.8rem;color:var(--text-sub);margin-bottom:5px;}.form-group input,.form-group select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:1rem;-webkit-appearance:none;}.btn-submit{width:100%;padding:12px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:1rem;font-weight:bold; cursor: pointer;}.expense-item{background:#FFF;padding:12px;border-radius:8px;border-bottom:1px solid #F0F0F0;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}.exp-detail{display:flex;flex-direction:column;}.exp-title{font-weight:600;font-size:0.95rem;}.exp-meta{font-size:0.75rem;color:var(--text-sub);margin-top:2px;}.exp-price{font-weight:bold;font-family:monospace;font-size:1.1rem;}
+        
+        /* 票券庫專屬樣式 */
+        .ticket-list { padding: 20px; }
+        .ticket-item { display: flex; align-items: center; gap: 15px; padding: 16px; background: #FFF; border-radius: 12px; text-decoration: none; color: var(--text-main); margin-bottom: 12px; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .ticket-item:active { background: #F5F5F7; }
+        .ticket-icon { font-size: 1.8rem; }
+        .ticket-text { display: flex; flex-direction: column; }
+        .ticket-name { font-weight: 600; font-size: 1rem; }
+        .ticket-sub { font-size: 0.75rem; color: var(--text-sub); margin-top: 4px; }
+
+        /* 行程導航與日記功能樣式 */
+        .spot-actions { display: flex; gap: 10px; margin-top: 15px; border-top: 1px dashed #E5E5EA; padding-top: 12px; justify-content: flex-end; align-items: stretch; }
+        .btn-action { text-decoration: none; font-size: 0.85rem; padding: 6px 14px; border-radius: 20px; font-weight: bold; cursor: pointer; border: none; outline: none; display: flex; align-items: center; gap: 6px; justify-content: center; }
+        .btn-map-quick { background: #E8F0FE; color: #1A73E8; flex:1;}
+        .btn-diary { background: #FCE8E6; color: #D93025; flex:1;}
+        
+        .diary-area { margin-top: 12px; padding: 12px; background: #FAF8F5; border-radius: 8px; border: 1px solid #F0EBE1; animation: fadeEffect 0.3s; }
+        .diary-text { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 0.95rem; resize: none; min-height: 70px; margin-bottom: 10px; box-sizing: border-box;}
+        .diary-text:focus { outline: none; border-color: var(--primary); }
+        
+        /* 自訂上傳與刪除按鈕樣式 */
+        .file-upload-wrapper { display: flex; gap: 10px; margin-bottom: 10px; }
+        .upload-container { position: relative; overflow: hidden; display: inline-block; flex:1; }
+        .btn-upload { background: white; border: 1px solid var(--border); color: #555; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; height: 100%;}
+        .upload-container input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; }
+        .btn-delete-photo { background: #FFF0F0; border: 1px solid #FFD6D6; color: #E53935; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; display: none; align-items: center; justify-content: center; gap: 5px; cursor: pointer; flex:1;}
+        
+        .diary-img-preview { max-width: 100%; max-height: 250px; border-radius: 8px; display: none; margin-top: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); object-fit: cover; }
+        
+        /* 連線狀態提示 */
+        #sync-status { text-align: center; font-size: 0.8rem; color: #10B981; padding: 5px; background: #E8F5E9; display: none; }
+    </style>
+</head>
+<body>
+    <div class="top-nav-slider" id="dateNav" style="display: flex;">
+        <div class="nav-slider-item active" onclick="showDay('d1', this)"><div class="date-day">SAT</div><div class="date-num">28</div></div>
+        <div class="nav-slider-item" onclick="showDay('d2', this)"><div class="date-day">SUN</div><div class="date-num">29</div></div>
+        <div class="nav-slider-item" onclick="showDay('d3', this)"><div class="date-day">MON</div><div class="date-num">30</div></div>
+        <div class="nav-slider-item" onclick="showDay('d4', this)"><div class="date-day">TUE</div><div class="date-num">31</div></div>
+        <div class="nav-slider-item" onclick="showDay('d5', this)"><div class="date-day">WED</div><div class="date-num">01</div></div>
+        <div class="nav-slider-item" onclick="showDay('d6', this)"><div class="date-day">THU</div><div class="date-num">02</div></div>
+        <div class="nav-slider-item" onclick="showDay('d7', this)"><div class="date-day">FRI</div><div class="date-num">03</div></div>
+    </div>
+
+    <div class="top-nav-slider" id="shopNav" style="display: none;"></div>
+
+    <div id="view-itinerary" style="display: block;">
+        <div id="d1" class="tab-content active">
+            <div class="day-header"><div class="day-title">Day 1｜抵達與河口湖自駕</div><div class="weather-box" id="w-d1"></div></div>
+            <div class="timeline">
+                <div class="stop"><div class="time">11:48</div><div class="spot-card"><div class="subway bg-jr-rapid">🚄 N'EX 特快</div><div class="spot-title">東京車站</div><div class="guide-box"><span class="tag booking">代號 E35162</span> 轉乘13:10 Willer巴士前往河口湖</div></div></div>
+                <div class="stop"><div class="time">15:17</div><div class="spot-card"><div class="subway bg-car">🚗 自駕</div><div class="spot-title">Toyota Rent a Car 河口湖店</div><div class="nav-info">📍 車機：<span class="car-code">0555-72-6800</span></div></div></div>
+                <div class="stop"><div class="time">16:00</div><div class="spot-card"><div class="subway bg-car">🚗 自駕</div><div class="spot-title">Lawson 河口湖大橋店</div><div class="nav-info">📍 車機：<span class="car-code">0555-72-2288</span></div></div></div>
+                <div class="stop"><div class="time">18:00</div><div class="spot-card"><div class="subway bg-car">🚗 自駕</div><div class="spot-title">不動茶屋 東戀路店</div><div class="guide-box"><span class="tag food">必吃</span> 餺飥麵(Houtou)</div><div class="nav-info">📍 車機：<span class="car-code">0555-72-8511</span></div></div></div>
+                <div class="stop"><div class="time">20:00</div><div class="spot-card"><div class="subway bg-car">🚗 自駕</div><div class="spot-title">シャーメゾンfunatsu</div></div></div>
+            </div>
+        </div>
+        <div id="d2" class="tab-content">
+            <div class="day-header"><div class="day-title">Day 2｜富士五湖深度自駕</div><div class="weather-box" id="w-d2"></div></div>
+            <div class="timeline">
+                <div class="stop"><div class="time">09:00</div><div class="spot-card"><div class="subway bg-car">🚗 自駕</div><div class="spot-title">AMAAMA BAR&CAFE</div><div class="nav-info">📍 車機：<span class="car-code">0555-62-1111</span></div></div></div>
+                <div class="stop"><div class="time">10:30</div><div class="spot-card"><div class="subway bg-car">🚗 自駕</div><div class="spot-title">平野之濱</div><div class="spot-desc">尋找絕景逆富士與山中湖天鵝船！</div></div></div>
+                <div class="stop"><div class="time">12:30</div><div class="spot-card"><div class="subway bg-car">🚗 自駕</div><div class="spot-title">忍野八海</div><div class="guide-box"><span class="tag food">必吃</span> 草餅、烤魚。</div><div class="nav-info">📍 車機：<span class="car-code">0555-84-4222</span></div></div></div>
+                <div class="stop"><div class="time">17:00</div><div class="spot-card"><div class="subway bg-car">🚗 自駕</div><div class="spot-title">山田屋飯店</div><div class="nav-info">📍 車機：<span class="car-code">0555-87-2311</span> (日歸溫泉)</div></div></div>
+                <div class="stop"><div class="time">19:00</div><div class="spot-card"><div class="subway bg-car">🚗 自駕</div><div class="spot-title">OGINO 河口湖店</div><div class="nav-info">📍 車機：<span class="car-code">0555-72-6100</span> (當地超市)</div></div></div>
+            </div>
+        </div>
+        <div id="d3" class="tab-content">
+            <div class="day-header"><div class="day-title">Day 3｜新宿潮流與夜生活</div><div class="weather-box" id="w-d3"></div></div>
+            <div class="timeline">
+                <div class="stop"><div class="time">08:30</div><div class="spot-card"><div class="subway bg-bus">🚌 富士急行巴士</div><div class="spot-title">Busta新宿</div><div class="guide-box"><span class="tag booking">代號 113672375</span> 09:10出發回Busta新宿</div></div></div>
+                <div class="stop"><div class="time">13:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">LUMINE 2 新宿</div><div class="spot-desc">抵達新宿車站直接開逛！質感女裝、生活雜貨</div></div></div>
+                <div class="stop"><div class="time">14:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">LUMINE EST 新宿</div><div class="spot-desc">往東口方向，年輕潮流服飾與美妝，超容易失心瘋</div></div></div>
+                <div class="stop"><div class="time">15:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">Cross Shinjuku Vision</div><div class="spot-desc">東口廣場抬頭看超逼真 3D 三花貓</div></div></div>
+                <div class="stop"><div class="time">17:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">KIDDY LAND 新宿</div><div class="spot-desc">吉卜力、三麗鷗與當紅動漫周邊</div></div></div>
+                <div class="stop"><div class="time">18:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">花園神社</div><div class="spot-desc">穿過喧囂商圈的都會綠洲，紅鳥居求平安</div></div></div>
+                <div class="stop"><div class="time">19:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">東急歌舞伎町 TOWER</div><div class="guide-box"><span class="tag food">必吃美食</span> 2F 新宿歌舞伎 hall，體驗賽博龐克祭典美食街</div></div></div>
+                <div class="stop"><div class="time">21:00</div><div class="spot-card"><div class="subway bg-jr-sobu">🟨 JR總武線 (往錦糸町)</div><div class="spot-title">麵匠竹虎</div><div class="spot-desc">入住錦糸町後，來一碗熱騰騰知名拉麵</div></div></div>
+            </div>
+        </div>
+        <div id="d4" class="tab-content">
+            <div class="day-header"><div class="day-title">Day 4｜淺草上野與銀座</div><div class="weather-box" id="w-d4"></div></div>
+            <div class="timeline">
+                <div class="stop"><div class="time">09:00</div><div class="spot-card"><div class="subway bg-hanzomon">🟪 半藏門線</div> <div class="subway bg-asakusa">🟥 淺草線 (押上轉)</div><div class="spot-title">淺草雷門</div><div class="guide-box"><span class="tag souvenir">必買伴手禮</span> 人形燒</div></div></div>
+                <div class="stop"><div class="time">11:30</div><div class="spot-card"><div class="subway bg-ginza">🟧 銀座線 (G)</div><div class="spot-title">阿美橫町</div><div class="guide-box"><span class="tag souvenir">必買伴手禮</span> 零食與平價藥妝</div></div></div>
+                <div class="stop"><div class="time">13:00</div><div class="spot-card"><div class="subway bg-hibiya">⬜ 日比谷線 (H)</div><div class="spot-title">小網神社</div><div class="spot-desc">隱藏版神社，求財求好運！</div></div></div>
+                <div class="stop"><div class="time">14:15</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">歌舞伎座</div><div class="spot-desc">欣賞傳統華麗建築與屋頂打卡</div></div></div>
+                <div class="stop"><div class="time">14:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">銀座三越</div><div class="spot-desc">地標百貨，逛逛 B1 Depachika 美食區</div></div></div>
+                <div class="stop"><div class="time">14:45</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">Brand Off 銀座4丁目</div><div class="spot-desc">二手名牌尋寶</div></div></div>
+                <div class="stop"><div class="time">16:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">GINZA SIX</div><div class="spot-desc">高端體驗與絕美的蔦屋書店</div></div></div>
+                <div class="stop"><div class="time">17:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">UNIQLO 銀座旗艦店</div><div class="spot-desc">超狂 12 層樓！頂樓喝 UQ Coffee</div></div></div>
+                <div class="stop"><div class="time">18:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">銀座 Loft</div><div class="spot-desc">質感生活雜貨，買伴手禮的好地方</div></div></div>
+                <div class="stop"><div class="time">20:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">五代目 花山烏龍麵</div><div class="guide-box"><span class="tag menu">必點菜單</span> 鬼ひも川 (鬼紐川寬扁麵)！排隊大挑戰</div></div></div>
+            </div>
+        </div>
+        <div id="d5" class="tab-content">
+            <div class="day-header"><div class="day-title">Day 5｜原宿表參道與澀谷</div><div class="weather-box" id="w-d5"></div></div>
+            <div class="timeline">
+                <div class="stop"><div class="time">09:30</div><div class="spot-card"><div class="subway bg-jr-yama">🟩 JR山手線</div><div class="spot-title">JR 原宿站</div><div class="spot-desc">開啟原宿潮流之旅</div></div></div>
+                <div class="stop"><div class="time">10:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">and ST TOKYO</div><div class="spot-desc">集結眾多日系服飾與生活雜貨</div></div></div>
+                <div class="stop"><div class="time">10:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">@cosme TOKYO</div><div class="spot-desc">車站對面的超大型美妝保養殿堂</div></div></div>
+                <div class="stop"><div class="time">11:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">竹下通</div><div class="spot-desc">原宿必逛年輕潮流街道，感受熱鬧氛圍</div></div></div>
+                <div class="stop"><div class="time">12:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">Wiggle Wiggle</div><div class="guide-box"><span class="tag souvenir">必買伴手禮</span> 色彩繽紛的韓系可愛雜貨</div></div></div>
+                <div class="stop"><div class="time">13:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">KIDDY LAND 原宿店</div><div class="spot-desc">卡通人物公仔與超豐富動漫周邊天堂</div></div></div>
+                <div class="stop"><div class="time">14:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">RAGTAG 原宿店</div><div class="spot-desc">質感設計師品牌、二手精品古著尋寶</div></div></div>
+                <div class="stop"><div class="time">15:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">niko and ... TOKYO</div><div class="spot-desc">完美結合傢飾與服飾的日系旗艦店</div></div></div>
+                <div class="stop"><div class="time">16:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">澀谷中心街</div><div class="spot-desc">來到澀谷最熱鬧的指標性街道</div></div></div>
+                <div class="stop"><div class="time">17:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">FREAK'S STORE 澀谷店</div><div class="spot-desc">超人氣日系潮流選物店</div></div></div>
+                <div class="stop"><div class="time">18:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">SHIBUYA 109</div><div class="spot-desc">澀谷最具代表性的年輕女裝潮流百貨</div></div></div>
+                <div class="stop"><div class="time">20:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">MEGA 唐吉訶德 澀谷</div><div class="spot-desc">24H 超大驚安殿堂，準備大掃貨！</div></div></div>
+            </div>
+        </div>
+        <div id="d6" class="tab-content">
+            <div class="day-header"><div class="day-title">Day 6｜石打丸山滑雪</div><div class="weather-box" id="w-d6"></div></div>
+            <div class="timeline">
+                <div class="stop"><div class="time">08:30</div><div class="spot-card"><div class="subway bg-shinkansen">🚄 上越新幹線</div><div class="spot-title">越後湯澤站</div><div class="spot-desc">車程約80分鐘，欣賞沿途雪景</div></div></div>
+                <div class="stop"><div class="time">10:00</div><div class="spot-card"><div class="subway bg-walk">🚶 站內</div><div class="spot-title">越後湯澤車站美食</div><div class="guide-box"><span class="tag food">必吃美食</span> 爆彈飯糰 (爆弾おにぎり)！</div></div></div>
+                <div class="stop"><div class="time">11:00</div><div class="spot-card"><div class="subway bg-walk">🏂 滑雪</div><div class="spot-title">石打丸山滑雪場</div><div class="spot-desc">享受新潟的粉雪，結束後搭乘新幹線返回</div></div></div>
+            </div>
+        </div>
+        <div id="d7" class="tab-content">
+            <div class="day-header"><div class="day-title">Day 7｜鎌倉與江之島</div><div class="weather-box" id="w-d7"></div></div>
+            <div class="timeline">
+                <div class="stop"><div class="time">09:00</div><div class="spot-card"><div class="subway bg-jr-rapid">🟦 JR橫須賀線</div><div class="spot-title">鎌倉站</div></div></div>
+                <div class="stop"><div class="time">10:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">小町通商店街</div><div class="spot-desc">吃喝玩樂第一站！</div></div></div>
+                <div class="stop"><div class="time">11:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">鎌倉紅谷 八幡宮前本店</div><div class="guide-box"><span class="tag souvenir">必買伴手禮</span> くるみッ子 (核桃糕)</div></div></div>
+                <div class="stop"><div class="time">12:00</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">鶴岡八幡宮</div><div class="spot-desc">走到商店街盡頭，參拜鎌倉最具代表性神社</div></div></div>
+                <div class="stop"><div class="time">14:00</div><div class="spot-card"><div class="subway bg-enoden">🚃 江之電</div><div class="spot-title">鎌倉高校前站</div><div class="spot-desc">灌籃高手平交道看海打卡</div></div></div>
+                <div class="stop"><div class="time">15:00</div><div class="spot-card"><div class="subway bg-enoden">🚃 江之電</div><div class="spot-title">YORIDOCORO</div><div class="spot-desc">復古氛圍的完美下午茶 (稻村崎站)</div></div></div>
+                <div class="stop"><div class="time">16:30</div><div class="spot-card"><div class="subway bg-enoden">🚃 江之電</div><div class="spot-title">江之島</div><div class="spot-desc">此行程的終點站，漫步上島</div></div></div>
+                <div class="stop"><div class="time">17:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">魚見亭</div><div class="guide-box"><span class="tag food">必吃海鮮</span> 位於江之島上，吹海風看絕美夕陽！</div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-maps" style="display: none; padding: 20px;">
+        <div class="day-title" style="text-align: center; margin-bottom: 20px;">🗺️ 每日全行程導航包</div>
+        
+        <div class="spot-card" style="margin-bottom: 15px;">
+            <div class="spot-title" style="color: var(--primary);">🏠 住宿導航</div>
+            <a href="https://maps.app.goo.gl/zZwCAU8u9PsTFD3w9?g_st=ipc" target="_blank" class="btn-maps-main" style="margin-bottom: 8px;">》 河口湖住宿</a>
+            <a href="https://maps.app.goo.gl/y6Q1opyAEqxbhmGV8?g_st=ipc" target="_blank" class="btn-maps-main">〉 東京住宿</a>
+        </div>
+
+        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">🗻 D1 東京河口湖</div><a href="https://www.google.com/maps/dir/Toyota+Rent+a+Car+-+Fuji-Kawaguchiko,+4657+%E8%88%B9%E6%B4%A5,+%E5%AF%8C%E5%A3%AB%E6%B2%B3%E5%8F%A3%E6%B9%96%E7%94%BA+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/Lawson+Lake+Kawaguchi+Ohashi,+6708-1+%E8%88%B9%E6%B4%A5,+%E5%AF%8C%E5%A3%AB%E6%B2%B3%E5%8F%A3%E6%B9%96%E7%94%BA+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/Herb+Garden+Tabinikki+Fuji-Kawaguchiko+Garden,+1996+%E8%88%B9%E6%B4%A5,+%E5%AF%8C%E5%A3%AB%E6%B2%B3%E5%8F%A3%E6%B9%96%E7%94%BA+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/%E6%97%A5%E6%9C%AC,+%E5%B1%B1%E6%A2%A8%E7%9C%8C%E5%AF%8C%E5%A3%AB%E5%90%89%E7%94%B0%E5%B8%82%E4%B8%AD%E6%9B%BD%E6%A0%B9%EF%BC%91%E4%B8%81%E7%9B%AE%EF%BC%94%E2%88%92%EF%BC%92%EF%BC%92,+%E5%AF%8C%E5%A3%AB%E5%90%89%E7%94%B0%E6%9C%AC%E7%94%BA%E9%80%9A%E3%82%8A%E5%95%86%E5%BA%97%E8%A1%97/data=!4m26!4m25!1m5!1m1!19sChIJkd2ZRpxgGWAR_zVPplpxggA!2m2!1d138.7728715!2d35.4977242!1m5!1m1!19sChIJ6fDgwjJeGWARqTOxMdPk2i0!2m2!1d138.7604767!2d35.506432!1m5!1m1!19sChIJ2SuIQVphGWARFQZrBwg3Tag!2m2!1d138.7557865!2d35.4930644!1m5!1m1!19sChIJ8dblRABhGWAR473Mky_3Cjw!2m2!1d138.7991707!2d35.4848269!3e0?authuser=2" target="_blank" class="btn-maps-main">📍 Google マップでルートを表示する</a></div>
+        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">🚗 D2 富士五湖</div><a href="https://www.google.com/maps/dir/%E6%97%A5%E6%9C%AC,+%E5%B1%B1%E6%A2%A8%E7%9C%8C%E5%B1%B1%E4%B8%AD%E6%B9%96%E6%9D%91%E5%B1%B1%E4%B8%AD%EF%BC%92%EF%BC%90%EF%BC%97%E2%88%92%EF%BC%97,+AMAAMA+BAR%26CAFE+LOUNGE/%E6%97%A5%E6%9C%AC,+%E5%B1%B1%E6%A2%A8%E7%9C%8C%E5%B1%B1%E4%B8%AD%E6%B9%96%E6%9D%91%E5%B9%B3%E9%87%8E%EF%BC%95%EF%BC%90%EF%BC%96%E2%88%92%EF%BC%91,+%E5%B1%B1%E4%B8%AD,+Lake+Yamanakako+Pleasure+Boat+%22Swan+Lake%22/Hirano+beach,+13+%E5%B9%B3%E9%87%8E,+%E5%B1%B1%E4%B8%AD%E6%B9%96%E6%9D%91+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/Oshino+hakkai,+Shibokusa,+Oshino,+Yamanashi,+Japan/FamilyMart,+481-21+%E9%BA%93,+%E5%AF%8C%E5%A3%AB%E5%AE%AE%E5%B8%82+%E9%9D%99%E5%B2%A1%E7%9C%8C,+Japan/Yamadaya+Hotel,+478+%E7%B2%BE%E9%80%B2,+%E5%AF%8C%E5%A3%AB%E6%B2%B3%E5%8F%A3%E6%B9%96%E7%94%BA+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/OGINO+Kawaguchiko+Store,+545%EF%BD%B03+%E8%88%B9%E6%B4%A5,+%E5%AF%8C%E5%A3%AB%E6%B2%B3%E5%8F%A3%E6%B9%96%E7%94%BA+%E5%B1%B1%E6%A2%A8%E7%9C%8C,+Japan/data=!4m44!4m43!1m5!1m1!19sChIJ33H_bzRlGWARH7ioeLaTEdQ!2m2!1d138.85504799999998!2d35.418251!1m5!1m1!19sChIJYxe0FQhlGWAR3xp8OZOEYAw!2m2!1d138.8509196!2d35.422633!1m5!1m1!19sChIJNxzQjuxvGWARSiMK1UFfoa4!2m2!1d138.9008237!2d35.4247002!1m5!1m1!19sChIJK4SZn4VmGWARcZ-vsGukOhY!2m2!1d138.83247409999998!2d35.4600675!1m5!1m1!19sChIJi7bsHyTdG2ART1x9Eobdj3Q!2m2!1d138.5728658!2d35.3853657!1m5!1m1!19sChIJ3WT5I4nmG2AR9n76_zzv1Gk!2m2!1d138.60272709999998!2d35.491522599999996!1m5!1m1!19sChIJ_0Nn5dJfGWARTXDoh0QhJyE!2m2!1d138.7575077!2d35.5017423!3e0?authuser=2" target="_blank" class="btn-maps-main">👉 點我開啟 Google 地圖 D2 導航路線</a></div>
+        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">🛍️ D3 新宿</div><a href="https://www.google.com/maps/dir/Lumine+Shinjuku+LUMINE+2,+%EF%BC%93%E4%B8%81%E7%9B%AE-%EF%BC%93%EF%BC%98-2+%E6%96%B0%E5%AE%BF,+%E6%96%B0%E5%AE%BF%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/LUMINE+EST+Shinjuku,+%EF%BC%93%E4%B8%81%E7%9B%AE-%EF%BC%93%EF%BC%98-1+%E6%96%B0%E5%AE%BF,+%E6%96%B0%E5%AE%BF%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/%E6%97%A5%E6%9C%AC,+%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E6%96%B0%E5%AE%BF%EF%BC%93%E4%B8%81%E7%9B%AE%EF%BC%92%EF%BC%93%E2%88%92%EF%BC%91%EF%BC%98+%E6%9D%B1%E6%96%B0%E5%AE%BF%E3%83%93%E3%83%AB+%E3%82%AF%E3%83%AD%E3%82%B9,+RF,+Cross+Shinjuku+Vision/KIDDYLAND+Shinjuku,+%E3%82%AA%E3%82%AB%E3%83%80%E3%83%A4%E3%83%93%E3%83%AB1F%EF%BD%9E4F,+%EF%BC%93%E4%B8%81%E7%9B%AE-%EF%BC%92%EF%BC%93-17+%E6%96%B0%E5%AE%BF,+%E6%96%B0%E5%AE%BF%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/Hanazono+Shrine,+%EF%BC%95%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%97-3+%E6%96%B0%E5%AE%BF,+%E6%96%B0%E5%AE%BF%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/Tokyu+Kabukicho+Tower,+%EF%BC%91%E4%B8%81%E7%9B%AE-%EF%BC%92%EF%BC%99-1+%E6%AD%8C%E8%88%9E%E4%BC%8E%E7%94%BA,+%E6%96%B0%E5%AE%BF%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/data=!4m38!4m37!1m5!1m1!19sChIJpT6_gNCMGGARgYQPQwXP3g0!2m2!1d139.7010276!2d35.689478699999995!1m5!1m1!19sChIJ_TibA9qMGGARNYmVIFyGU9k!2m2!1d139.70114189999998!2d35.691250499999995!1m5!1m1!19sChIJrwWR35uNGGARG7Svj20aEfM!2m2!1d139.7008107!2d35.692642!1m5!1m1!19sChIJ2YhHaACNGGARCoFxF7YqstA!2m2!1d139.7009716!2d35.6929851!1m5!1m1!19sChIJK9584NuMGGARVKfZjpYoQDs!2m2!1d139.7053279!2d35.6935311!1m5!1m1!19sChIJP6oqgv2NGGARqV5VFswMftQ!2m2!1d139.70058939999998!2d35.6957513!3e2?authuser=2" target="_blank" class="btn-maps-main">👉 點我開啟：新宿無敵逛街步行導航</a></div>
+        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">👘 D4 淺草上野銀座</div><a href="請在這裡貼上D4網址" target="_blank" class="btn-maps-main">➡️ 點此一鍵打開 銀座步行路線</a></div>
+        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">👗 D5 原宿表參澀谷</div><a href="https://www.google.com/maps/dir/Harajuku+Station,+1+Chome+Jingumae,+Shibuya,+Tokyo,+Japan/%E6%97%A5%E6%9C%AC,+%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%8B%E8%B0%B7%E5%8C%BA%E7%A5%9E%E5%AE%AE%E5%89%8D%EF%BC%91%E4%B8%81%E7%9B%AE%EF%BC%91%EF%BC%94%E2%88%92%EF%BC%93%EF%BC%90+WITH+HARAJUKU+1F,+and+ST+TOKYO/%EF%BC%A0cosme+TOKYO,+%EF%BC%91%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%94-27+%E7%A5%9E%E5%AE%AE%E5%89%8D,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/Takeshita+Street,+%EF%BC%91%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%96-6+%E7%A5%9E%E5%AE%AE%E5%89%8D,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/%E6%97%A5%E6%9C%AC,+%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%B8%8B%E8%B0%B7%E5%8C%BA%E7%A5%9E%E5%AE%AE%E5%89%8D%EF%BC%91%E4%B8%81%E7%9B%AE%EF%BC%98%E2%88%92%EF%BC%91+Daisy%E5%8E%9F%E5%AE%BF,+WIGGLE+WIGGLE.ZIP+HARAJUKU/RAGTAG,+%E3%83%92%E3%83%A5%E3%83%BC%E3%83%AA%E3%83%83%E3%82%AF%E7%A5%9E%E5%AE%AE%E5%89%8D%E3%83%93%E3%83%AB+1F%E3%83%BB2F,+%EF%BC%95%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%97-9+%E7%A5%9E%E5%AE%AE%E5%89%8D,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/niko+and+...+TOKYO,+1F2F,+%EF%BC%96%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%92-20+%E7%A5%9E%E5%AE%AE%E5%89%8D,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/data=!4m44!4m43!1m5!1m1!19sChIJ_yy1ybqMGGAR0tPR4qiHDVY!2m2!1d139.7024662!2d35.670090099999996!1m5!1m1!19sChIJV4XZgvqNGGARZ1tc_80ZhhM!2m2!1d139.7031067!2d35.6705208!1m5!1m1!19sChIJXw6ieKKNGGARej0HfrnPlPE!2m2!1d139.7031743!2d35.6701458!1m5!1m1!19sChIJL51pWnmNGGAR-e2hoAztmTQ!2m2!1d139.7046761!2d35.6712601!1m5!1m1!19sChIJY5AQ78-NGGARX4jyGpad6GI!2m2!1d139.7059855!2d35.6705168!1m5!1m1!19sChIJl05op6aMGGARqtcwxvIoG9Y!2m2!1d139.7052181!2d35.6657568!1m5!1m1!19sChIJAQCnnaaMGGARv3e26w2Kczk!2m2!1d139.7044202!2d35.6665838!3e2?authuser=2" target="_blank" class="btn-maps-main" style="margin-bottom: 8px;">➡️ 點我開啟 E&K 原宿全行程地圖</a><a href="https://www.google.com/maps/dir/Shibuya+Center-Gai,+Udagawacho,+Shibuya,+Tokyo,+Japan/FREAK'S+STORE+Shibuya,+M%E3%83%93%E3%83%AB,+%EF%BC%91%E4%B8%81%E7%9B%AE-%EF%BC%91%EF%BC%93-1+%E7%A5%9E%E5%8D%97,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/Shibuya+109,+%EF%BC%92%E4%B8%81%E7%9B%AE-%EF%BC%92%EF%BC%99-1+%E9%81%93%E7%8E%84%E5%9D%82,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/MEGA+Don+Quijote,+%EF%BC%92%EF%BC%98-6+%E5%AE%87%E7%94%B0%E5%B7%9D%E7%94%BA,+%E6%B8%8B%E8%B0%B7%E5%8C%BA+%E6%9D%B1%E4%BA%AC%E9%83%BD,+Japan/data=!4m26!4m25!1m5!1m1!19sChIJI0xlZamMGGARVz2RF8H9Vz8!2m2!1d139.698578!2d35.6604139!1m5!1m1!19sChIJUzfHlaiMGGARpLxcCvZnorQ!2m2!1d139.7004055!2d35.662956199999996!1m5!1m1!19sChIJhxxszamMGGARcuAXpFunolU!2m2!1d139.698728!2d35.6595771!1m5!1m1!19sChIJr4J6pKmMGGARdQLOgrzToH4!2m2!1d139.6978172!2d35.6603873!3e2?authuser=2" target="_blank" class="btn-maps-main">➡️ 點我開啟 E&K 澀谷全行程地圖</a></div>
+        <div class="spot-card" style="margin-bottom: 15px;"><div class="spot-title" style="color: var(--primary);">🌊 D7 鎌倉・江之島</div><a href="請在這裡貼上D7網址" target="_blank" class="btn-maps-main">➡️ 點我開啟鎌倉・江之島全行程地圖</a></div>
+    </div>
+
+    <div id="view-accounting" style="display: none;">
+        <div class="accounting-panel">
+            <div class="summary-card"><div style="font-size:0.9rem; opacity:0.8;">總花費 (TWD)</div><div class="total-amount" id="calc-total-twd">$0</div><div class="balance-info" id="calc-balance">目前無欠款</div></div>
+            <div class="add-expense-form">
+                <h3 style="margin-bottom: 15px; font-size: 1.1rem;">📝 記一筆</h3>
+                <div class="form-group"><label>項目名稱</label><input type="text" id="exp-name" placeholder="例如：晚餐-不動茶屋"></div>
+                <div class="form-group"><label>金額 (日幣 JPY)</label><input type="number" id="exp-amount" placeholder="輸入日幣金額"></div>
+                <div style="display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 1;"><label>誰先付款？</label><select id="exp-payer"><option value="E">E</option><option value="K">K</option></select></div>
+                    <div class="form-group" style="flex: 1;"><label>誰要分攤？</label><select id="exp-split"><option value="Both">共同平分</option><option value="E">僅 E 負擔</option><option value="K">僅 K 負擔</option></select></div>
+                </div>
+                <div class="form-group"><label>匯率設定</label><input type="number" id="exp-rate" value="0.21" step="0.001"></div>
+                <button class="btn-submit" onclick="addExpense()">儲存至雲端</button>
+            </div>
+            <h3 style="margin-bottom: 10px; font-size: 1rem; color:var(--text-sub);">消費明細</h3>
+            <div class="expense-list" id="expense-list-container"></div>
+        </div>
+    </div>
+
+    <div id="view-tickets" style="display: none;">
+        <div class="ticket-list">
+            <h2 class="day-title" style="text-align: center; margin-bottom: 20px;">🎫 專屬車票與文件庫</h2>
+            <a href="TOKYO.pdf" target="_blank" class="ticket-item"><div class="ticket-icon">📄</div><div class="ticket-text"><span class="ticket-name">打開 E&K 旅遊秘笈</span><span class="ticket-sub">你們精心整理的行程主體文件</span></div></a>
+            <a href="D1_N'EX.pdf" target="_blank" class="ticket-item"><div class="ticket-icon">🚆</div><div class="ticket-text"><span class="ticket-name">3/28 N'EX 特快車票</span><span class="ticket-sub">成田機場前往東京車站</span></div></a>
+            <a href="東京to河口湖_bus.pdf" target="_blank" class="ticket-item"><div class="ticket-icon">🚌</div><div class="ticket-text"><span class="ticket-name">3/28 東京至河口湖巴士</span><span class="ticket-sub">Willer 巴士電子票券</span></div></a>
+            <a href="河口湖to東京_bus.pdf" target="_blank" class="ticket-item"><div class="ticket-icon">🚌</div><div class="ticket-text"><span class="ticket-name">3/30 河口湖至新宿巴士</span><span class="ticket-sub">富士急行巴士回程車票</span></div></a>
+            <a href="錦系町to機場_bus.pdf" target="_blank" class="ticket-item"><div class="ticket-icon">✈️</div><div class="ticket-text"><span class="ticket-name">4/6 錦糸町至羽田機場巴士</span><span class="ticket-sub">最後一天的回程機場巴士</span></div></a>
+            <p style="text-align:center; font-size:0.8rem; color:var(--text-sub); margin-top:20px;">💡 點擊上方卡片即可直接開啟 PDF 檔案</p>
+        </div>
+    </div>
+
+    <div id="view-shopping" style="display: none;">
+        <div id="sync-status">🟢 雲端同步連線中...</div>
+        <div style="padding: 20px 20px 0;">
+            <div class="add-expense-form" style="margin-bottom: 10px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="text" id="new-shop-item" placeholder="新增想買的物品、店鋪..." style="flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem;">
+                    <button class="btn-submit" onclick="addShoppingItem()" style="width: auto; padding: 10px 15px;">新增</button>
+                </div>
+            </div>
+        </div>
+        <div class="timeline" id="shopping-list-container" style="padding-top: 0;"></div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" id="nav-itinerary" onclick="switchMainTab('itinerary')"><span class="nav-icon">🗺️</span>行程</div>
+        <div class="nav-item" id="nav-maps" onclick="switchMainTab('maps')"><span class="nav-icon">📍</span>導航</div>
+        <div class="nav-item" id="nav-shopping" onclick="switchMainTab('shopping')"><span class="nav-icon">🛍️</span>必買</div>
+        <div class="nav-item" id="nav-accounting" onclick="switchMainTab('accounting')"><span class="nav-icon">💰</span>記帳本</div>
+        <div class="nav-item" id="nav-tickets" onclick="switchMainTab('tickets')"><span class="nav-icon">🎫</span>票券</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB7ssGrYVT2ilIYZlgwO2bNnMbG7Bv96rM",
+            authDomain: "ek-tokyo.firebaseapp.com",
+            projectId: "ek-tokyo",
+            storageBucket: "ek-tokyo.firebasestorage.app",
+            messagingSenderId: "975116959090",
+            appId: "1:975116959090:web:541209fae530d25e7071eb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // === 核心介面切換邏輯 ===
+        window.showDay = function(dayId, element) {
+            document.querySelectorAll('#dateNav .nav-slider-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById(dayId).classList.add('active');
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.switchMainTab = function(tabName) {
+            document.getElementById('view-itinerary').style.display = tabName === 'itinerary' ? 'block' : 'none';
+            document.getElementById('view-maps').style.display = tabName === 'maps' ? 'block' : 'none';
+            document.getElementById('view-shopping').style.display = tabName === 'shopping' ? 'block' : 'none';
+            document.getElementById('view-accounting').style.display = tabName === 'accounting' ? 'block' : 'none';
+            document.getElementById('view-tickets').style.display = tabName === 'tickets' ? 'block' : 'none';
+            
+            document.getElementById('dateNav').style.display = tabName === 'itinerary' ? 'flex' : 'none';
+            document.getElementById('shopNav').style.display = tabName === 'shopping' ? 'flex' : 'none';
+
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-' + tabName).classList.add('active');
+            
+            if (tabName === 'shopping' || tabName === 'accounting') {
+                document.getElementById('sync-status').style.display = 'block';
+                setTimeout(() => { document.getElementById('sync-status').style.display = 'none'; }, 3000);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // === 照片壓縮共用函數 ===
+        function compressAndSaveImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 600; 
+                    let width = img.width; let height = img.height;
+                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', 0.6));
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        // === 行程頁面：自動化注入「導航」、「日記」與「刪除照片」 ===
+        document.addEventListener("DOMContentLoaded", () => {
+            const spotCards = document.querySelectorAll('#view-itinerary .spot-card');
+            spotCards.forEach((card, index) => {
+                const titleEl = card.querySelector('.spot-title');
+                if (!titleEl) return;
+                const spotName = titleEl.innerText.trim();
+
+                const actionBar = document.createElement('div');
+                actionBar.className = 'spot-actions';
+
+                const mapBtn = document.createElement('a');
+                mapBtn.className = 'btn-action btn-map-quick';
+                mapBtn.href = `https://www.google.com/maps/search/?api=1&query=$${encodeURIComponent(spotName + ' 東京')}`;
+                mapBtn.target = '_blank'; mapBtn.innerHTML = '🗺️ 導航';
+
+                const diaryBtn = document.createElement('button');
+                diaryBtn.className = 'btn-action btn-diary';
+                diaryBtn.innerHTML = '📷 紀錄';
+
+                actionBar.appendChild(diaryBtn); actionBar.appendChild(mapBtn);
+                card.appendChild(actionBar);
+
+                const diaryArea = document.createElement('div');
+                diaryArea.className = 'diary-area'; diaryArea.style.display = 'none';
+
+                const textArea = document.createElement('textarea');
+                textArea.className = 'diary-text'; textArea.placeholder = '寫下這站的趣事或花費...';
+                if(localStorage.getItem(`diary_text_${index}`)) textArea.value = localStorage.getItem(`diary_text_${index}`);
+                textArea.addEventListener('input', (e) => localStorage.setItem(`diary_text_${index}`, e.target.value));
+
+                const uploadWrapper = document.createElement('div');
+                uploadWrapper.className = 'file-upload-wrapper';
+                
+                const uploadContainer = document.createElement('div');
+                uploadContainer.className = 'upload-container';
+                uploadContainer.innerHTML = `<div class="btn-upload">📎 新增照片</div>`;
+                
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file'; fileInput.accept = 'image/*';
+                uploadContainer.appendChild(fileInput);
+
+                const deleteBtn = document.createElement('div');
+                deleteBtn.className = 'btn-delete-photo'; deleteBtn.innerHTML = '🗑️ 移除照片';
+
+                uploadWrapper.appendChild(uploadContainer); uploadWrapper.appendChild(deleteBtn);
+
+                const imgPreview = document.createElement('img');
+                imgPreview.className = 'diary-img-preview';
+                
+                if(localStorage.getItem(`diary_img_${index}`)) {
+                    imgPreview.src = localStorage.getItem(`diary_img_${index}`);
+                    imgPreview.style.display = 'block'; deleteBtn.style.display = 'flex';
+                }
+
+                fileInput.addEventListener('change', (e) => {
+                    if(e.target.files[0]) {
+                        compressAndSaveImage(e.target.files[0], (dataUrl) => {
+                            imgPreview.src = dataUrl; imgPreview.style.display = 'block'; deleteBtn.style.display = 'flex';
+                            try { localStorage.setItem(`diary_img_${index}`, dataUrl); } catch (err) { alert('手機暫存空間已滿！'); }
+                        });
+                    }
+                });
+
+                deleteBtn.addEventListener('click', () => {
+                    if(confirm('確定要移除這張照片嗎？')) {
+                        localStorage.removeItem(`diary_img_${index}`);
+                        imgPreview.src = ''; imgPreview.style.display = 'none'; deleteBtn.style.display = 'none'; fileInput.value = '';
+                    }
+                });
+
+                diaryArea.appendChild(textArea); diaryArea.appendChild(uploadWrapper); diaryArea.appendChild(imgPreview);
+                card.appendChild(diaryArea);
+                diaryBtn.addEventListener('click', () => diaryArea.style.display = diaryArea.style.display === 'none' ? 'block' : 'none');
+            });
+        });
+
+        // === FIREBASE 雲端必買清單邏輯 (使用獨立集合 tokyo_shopping) ===
+        const shopCategories = ['東京車站', 'LOFT', '富士山', '澀谷', '新宿', '羽田機場', '原宿', '淺草'];
+        window.currentShopCat = shopCategories[0];
+        let shoppingData = {}; 
+
+        const defaultShoppingData = [
+            { cat: '東京車站', name: '生巧克力厚餅乾 - VANILLBEANS', mapLink: 'https://maps.app.goo.gl/search/Haneda+Airport+Duty+Free' },
+            { cat: '東京車站', name: 'GRANSTA 跳跳糖巧克力', mapLink: 'https://maps.app.goo.gl/search/@cosme+TOKYO+Harajuku' },
+            { cat: 'LOFT', name: '日本質感磁鐵', mapLink: 'https://maps.app.goo.gl/search/shishokubar_asakusa' },
+            { cat: 'LOFT', name: 'lipopeel 粉刺清', mapLink: 'https://maps.app.goo.gl/search/shishokubar_asakusa' },
+            { cat: '富士山', name: 'Q-STA 一樓 富士山伴手禮', mapLink: 'https://www.google.com/maps/search/VANILLABEANS+東京車站' },
+            { cat: '澀谷', name: '唐吉軻德 齒磨牙膏', mapLink: 'https://www.google.com/maps/search/GRANSTA+東京車站' },
+            { cat: '澀谷', name: '唐吉軻德 DHC UHA味覺糖 KissMe', mapLink: 'https://www.google.com/maps/search/GRANSTA+東京車站' },
+            { cat: '新宿', name: 'cois espresso club - 巴斯克起司蛋糕', mapLink: 'https://www.google.com/maps/search/LOFT' },
+            { cat: '羽田機場', name: 'ROYCE 開心果', mapLink: 'https://www.google.com/maps/search/Q-STA+富士山' },
+            { cat: '原宿', name: '@cosme防小人噴霧', mapLink: 'https://www.google.com/maps/search/MEGA+唐吉軻德+澀谷' },
+            { cat: '淺草', name: 'shishokubar_asakusa 萬用調味料', mapLink: 'https://www.google.com/maps/search/cois+espresso+club+新宿' }
+        ];
+
+        function buildShopNav() {
+            const shopNav = document.getElementById('shopNav');
+            shopNav.innerHTML = '';
+            shopCategories.forEach((cat, idx) => {
+                const item = document.createElement('div');
+                item.className = `nav-slider-item ${idx === 0 ? 'active' : ''}`;
+                item.innerHTML = `<div class="shop-cat-title">${cat}</div>`;
+                item.onclick = function() {
+                    document.querySelectorAll('#shopNav .nav-slider-item').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                    window.currentShopCat = cat;
+                    this.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    renderShoppingList();
+                };
+                shopNav.appendChild(item);
+            });
+        }
+        buildShopNav();
+
+        let isFirstLoad = true;
+        const qShop = query(collection(db, "tokyo_shopping"), orderBy("createdAt", "asc"));
+        
+        onSnapshot(qShop, async (snapshot) => {
+            if(isFirstLoad && snapshot.empty) {
+                console.log("寫入預設資料中...");
+                for(const item of defaultShoppingData) {
+                    await addDoc(collection(db, "tokyo_shopping"), {
+                        category: item.cat, name: item.name, mapLink: item.mapLink, igLink: '', text: '', img: '', createdAt: serverTimestamp()
+                    });
+                }
+            }
+            isFirstLoad = false;
+
+            shoppingData = {};
+            shopCategories.forEach(cat => shoppingData[cat] = []);
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                if(shoppingData[data.category]) {
+                    shoppingData[data.category].push({ id: doc.id, ...data });
+                }
+            });
+            renderShoppingList();
+        });
+
+        function renderShoppingList() {
+            const container = document.getElementById('shopping-list-container');
+            container.innerHTML = '';
+            const items = shoppingData[window.currentShopCat] || [];
+
+            if(items.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px 20px; color: var(--text-sub);">還沒有加入任何想買的東西喔！<br>趕快在上方新增吧 👇</div>`;
+                return;
+            }
+
+            items.forEach((item) => {
+                const mapUrl = item.mapLink ? item.mapLink : `https://www.google.com/maps/search/?api=1&query=$${encodeURIComponent(item.name + ' ' + window.currentShopCat)}`;
+
+                const card = document.createElement('div');
+                card.className = 'stop';
+                card.innerHTML = `
+                    <div class="spot-card" style="margin-bottom: 0;">
+                        <div class="spot-title">
+                            ${item.name}
+                            <button onclick="deleteShoppingItem('${item.id}', '${item.img}')" style="background:none; border:none; color:#E53935; font-size:1.1rem; cursor:pointer; padding:5px;">🗑️</button>
+                        </div>
+                        
+                        <div class="spot-actions" style="margin-top:10px; align-items: stretch;">
+                            <button class="btn-action btn-diary" onclick="toggleShopDiary('${item.id}')">📷 紀錄 / 連結</button>
+                            <a class="btn-action btn-map-quick" href="${mapUrl}" target="_blank">🗺️ 導航</a>
+                            <a href="${item.igLink || '#'}" target="_blank" onclick="if(!'${item.igLink}') { alert('請先在下方展開紀錄並填寫 IG 連結喔！'); return false; }" style="display: flex; align-items: center; justify-content: center; margin-left: 5px; text-decoration: none;">
+                                <img src="image.png" alt="IG" style="width: 32px; height: 32px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                            </a>
+                        </div>
+
+                        <div class="diary-area" id="shop-diary-${item.id}" style="display:none; margin-top:10px;">
+                            <label style="font-size:0.75rem; color:var(--text-sub); display:block; margin-bottom:5px;">📍 自訂 Google Map 連結</label>
+                            <input type="text" value="${item.mapLink || ''}" onchange="updateShopMapLink('${item.id}', this.value)" placeholder="請貼上地圖分享連結..." style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; font-size:0.9rem;">
+                            
+                            <label style="font-size:0.75rem; color:var(--text-sub); display:block; margin-bottom:5px;">📱 Instagram 連結</label>
+                            <input type="text" value="${item.igLink || ''}" onchange="updateShopIgLink('${item.id}', this.value)" placeholder="請貼上 IG 貼文或帳號連結..." style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; font-size:0.9rem;">
+                            
+                            <textarea class="diary-text" onchange="updateShopText('${item.id}', this.value)" placeholder="寫下尺寸、顏色、價格或代購筆記...">${item.text || ''}</textarea>
+                            
+                            <div class="file-upload-wrapper">
+                                <div class="upload-container">
+                                    <div class="btn-upload">📎 新增照片</div>
+                                    <input type="file" accept="image/*" onchange="handleShopImageUpload(event, '${item.id}')">
+                                </div>
+                                <div class="btn-delete-photo" id="btn-del-shop-img-${item.id}" style="display:${item.img ? 'flex' : 'none'};" onclick="deleteShopImage('${item.id}', '${item.img}')">🗑️ 移除</div>
+                            </div>
+                            <div style="text-align:center; font-size:0.7rem; color:#888; display:none;" id="uploading-text-${item.id}">照片上傳雲端中，請稍候...⏳</div>
+                            <img class="diary-img-preview" id="shop-img-preview-${item.id}" src="${item.img || ''}" style="display:${item.img ? 'block' : 'none'};">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.toggleShopDiary = function(id) {
+            const area = document.getElementById(`shop-diary-${id}`);
+            area.style.display = area.style.display === 'none' ? 'block' : 'none';
+        }
+
+        window.addShoppingItem = async function() {
+            const input = document.getElementById('new-shop-item');
+            const name = input.value.trim();
+            if(!name) return alert("請輸入想買的物品名稱！");
+            input.value = '';
+            
+            await addDoc(collection(db, "tokyo_shopping"), {
+                category: window.currentShopCat, name: name, mapLink: '', igLink: '', text: '', img: '', createdAt: serverTimestamp()
+            });
+        }
+
+        window.deleteShoppingItem = async function(id, imgUrl) {
+            if(confirm('確定要刪除這筆雲端清單嗎？')) {
+                if(imgUrl && imgUrl.startsWith('http')) {
+                    try { await deleteObject(ref(storage, imgUrl)); } catch(e) { console.log('刪除照片失敗'); }
+                }
+                await deleteDoc(doc(db, "tokyo_shopping", id));
+            }
+        }
+
+        window.updateShopMapLink = async function(id, value) {
+            await updateDoc(doc(db, "tokyo_shopping", id), { mapLink: value });
+            setTimeout(() => document.getElementById(`shop-diary-${id}`).style.display = 'block', 500); 
+        }
+
+        // 新增：更新 IG 連結的函數
+        window.updateShopIgLink = async function(id, value) {
+            await updateDoc(doc(db, "tokyo_shopping", id), { igLink: value });
+            setTimeout(() => document.getElementById(`shop-diary-${id}`).style.display = 'block', 500); 
+        }
+
+        window.updateShopText = async function(id, value) {
+            await updateDoc(doc(db, "tokyo_shopping", id), { text: value });
+        }
+
+        window.handleShopImageUpload = function(event, id) {
+            const file = event.target.files[0];
+            if(!file) return;
+            
+            document.getElementById(`uploading-text-${id}`).style.display = 'block';
+
+            compressAndSaveImage(file, async (dataUrl) => {
+                document.getElementById(`shop-img-preview-${id}`).src = dataUrl;
+                document.getElementById(`shop-img-preview-${id}`).style.display = 'block';
+                
+                try {
+                    const storageRef = ref(storage, `shopping_images/${id}_${Date.now()}.jpg`);
+                    await uploadString(storageRef, dataUrl, 'data_url');
+                    const downloadURL = await getDownloadURL(storageRef);
+                    await updateDoc(doc(db, "tokyo_shopping", id), { img: downloadURL });
+                    document.getElementById(`btn-del-shop-img-${id}`).style.display = 'flex';
+                } catch(error) {
+                    alert("上傳失敗，請確認 Firebase Storage 權限是否開啟！");
+                } finally {
+                    document.getElementById(`uploading-text-${id}`).style.display = 'none';
+                }
+            });
+        }
+
+        window.deleteShopImage = async function(id, imgUrl) {
+            if(confirm('確定要從雲端移除這張照片嗎？')) {
+                document.getElementById(`shop-img-preview-${id}`).style.display = 'none';
+                document.getElementById(`btn-del-shop-img-${id}`).style.display = 'none';
+                
+                if(imgUrl && imgUrl.startsWith('http')) {
+                    try { await deleteObject(ref(storage, imgUrl)); } catch(e) {}
+                }
+                await updateDoc(doc(db, "tokyo_shopping", id), { img: '' });
+            }
+        }
+
+        // === FIREBASE 雲端記帳本邏輯 ===
+        let expensesData = [];
+
+        const qExpense = query(collection(db, "tokyo_expenses"), orderBy("createdAt", "desc"));
+        onSnapshot(qExpense, (snapshot) => {
+            expensesData = [];
+            snapshot.forEach((doc) => {
+                expensesData.push({ id: doc.id, ...doc.data() });
+            });
+            renderCloudExpenses();
+        });
+
+        function renderCloudExpenses() {
+            const container = document.getElementById('expense-list-container'); 
+            container.innerHTML = '';
+            let totalTWD = 0; 
+            let oweStatus = { E_owes_K: 0, K_owes_E: 0 };
+
+            expensesData.forEach((exp) => {
+                const costTWD = Math.round(exp.amount * exp.rate); 
+                totalTWD += costTWD;
+                
+                if (exp.split === 'Both') { 
+                    const half = costTWD / 2; 
+                    if (exp.payer === 'E') oweStatus.K_owes_E += half; 
+                    if (exp.payer === 'K') oweStatus.E_owes_K += half; 
+                } else if (exp.split !== exp.payer) { 
+                    if (exp.payer === 'K' && exp.split === 'E') oweStatus.E_owes_K += costTWD; 
+                    if (exp.payer === 'E' && exp.split === 'K') oweStatus.K_owes_E += costTWD; 
+                }
+
+                container.innerHTML += `
+                    <div class="expense-item">
+                        <div class="exp-detail">
+                            <span class="exp-title">${exp.name}</span>
+                            <span class="exp-meta">${exp.payer} 付款 | 分攤: ${exp.split === 'Both' ? '平分' : exp.split}</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <div class="exp-price">¥${exp.amount}</div>
+                            <div style="font-size:0.7rem; color:#888;">(NT$${costTWD})</div>
+                            <button onclick="deleteCloudExpense('${exp.id}')" style="background:none; border:none; color:red; font-size:0.7rem; margin-top:2px; cursor:pointer;">刪除</button>
+                        </div>
+                    </div>`;
+            });
+
+            document.getElementById('calc-total-twd').innerText = `$${totalTWD.toLocaleString()}`;
+            
+            const netOwe = oweStatus.E_owes_K - oweStatus.K_owes_E; 
+            const balanceEl = document.getElementById('calc-balance');
+            
+            if (netOwe > 0) {
+                balanceEl.innerHTML = `⚠️ 結算：<b>E 需給 K</b> NT$ ${Math.round(netOwe)}`; 
+            } else if (netOwe < 0) {
+                balanceEl.innerHTML = `⚠️ 結算：<b>K 需給 E</b> NT$ ${Math.round(Math.abs(netOwe))}`; 
+            } else {
+                balanceEl.innerHTML = `✅ 目前雙方互不相欠`;
+            }
+        }
+
+        window.addExpense = async function() {
+            const name = document.getElementById('exp-name').value; 
+            const amount = parseFloat(document.getElementById('exp-amount').value);
+            const payer = document.getElementById('exp-payer').value; 
+            const split = document.getElementById('exp-split').value; 
+            const rate = parseFloat(document.getElementById('exp-rate').value);
+            
+            if (!name || isNaN(amount)) return alert("請輸入名稱與金額！");
+
+            await addDoc(collection(db, "tokyo_expenses"), {
+                name: name, amount: amount, payer: payer, split: split, rate: rate, createdAt: serverTimestamp()
+            });
+
+            document.getElementById('exp-name').value = ''; 
+            document.getElementById('exp-amount').value = ''; 
+        }
+
+        window.deleteCloudExpense = async function(id) { 
+            if(confirm('確定要刪除這筆雲端帳目嗎？\n注意：這會影響雙方的結算金額！')) {
+                await deleteDoc(doc(db, "tokyo_expenses", id));
+            }
+        }
+
+        // === 氣象邏輯 (修正版) ===
+        async function fetchLiveWeather() {
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.5021,35.6895&longitude=138.7690,139.6917&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&forecast_days=16');
+                const data = await res.json();
+                const kData = data[0].daily; const tData = data[1].daily;
+                
+                function formatW(locData, dateStr) {
+                    const idx = locData.time.indexOf(dateStr);
+                    if(idx === -1) return null;
+                    const code = locData.weathercode[idx];
+                    let icon = '⛅'; if(code <= 3) icon = '☀️'; if(code >= 51 && code <= 67) icon = '🌧️';
+                    return `${icon} ${Math.round(locData.temperature_2m_min[idx])}° - ${Math.round(locData.temperature_2m_max[idx])}°C`;
+                }
+
+                const days = ['d1','d2','d3','d4','d5','d6','d7'];
+                const dates = ['2026-03-28','2026-03-29','2026-03-30','2026-03-31','2026-04-01','2026-04-02','2026-04-03'];
+                
+                days.forEach((day, i) => {
+                    const weatherEl = document.getElementById(`w-${day}`);
+                    if(weatherEl) {
+                        const weatherStr = formatW(i < 2 ? kData : tData, dates[i]);
+                        if(weatherStr) {
+                            weatherEl.innerText = weatherStr;
+                        } else {
+                            weatherEl.style.display = 'none';
+                        }
+                    }
+                });
+            } catch (e) { 
+                console.log('Weather API Error:', e); 
+                document.querySelectorAll('.weather-box').forEach(el => el.style.display = 'none');
+            }
+        }
+        fetchLiveWeather();
+    </script>
+</body>
+</html>
