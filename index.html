@@ -299,6 +299,7 @@
             <a href="松本清.jpg" target="_blank" class="coupon-btn">🟡 松本清</a>
             <a href="札幌藥妝.jpg" target="_blank" class="coupon-btn">🏷️ 札幌藥妝</a>
             <a href="唐吉軻德.jpg" target="_blank" class="coupon-btn">🐧 唐吉軻德</a>
+            <div class="coupon-btn" onclick="window.open('https://japanportal.donki-global.com/coupon/cp001_zhtw.html', '_blank')"><span class="coupon-icon">🟣</span>🐧唐吉軻德</div>
             <a href="銀座樂天.jpg" target="_blank" class="coupon-btn">🎫 銀座樂天</a>
             <a href="愛電王.jpg" target="_blank" class="coupon-btn">⚡ 愛電王</a>
             
@@ -316,15 +317,16 @@
     </div>
 
     <script type="module">
+        // ★ 引入改良版的 uploadBytes 代替容易出錯的 uploadString
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-        import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB7ssGrYVT2ilIYZlgwO2bNnMbG7Bv96rM",
             authDomain: "ek-tokyo.firebaseapp.com",
             projectId: "ek-tokyo",
-            storageBucket: "ek-tokyo.firebasestorage.app",
+            storageBucket: "ek-tokyo.firebasestorage.app", 
             messagingSenderId: "975116959090",
             appId: "1:975116959090:web:541209fae530d25e7071eb"
         };
@@ -349,7 +351,7 @@
             document.getElementById('view-shopping').style.display = tabName === 'shopping' ? 'block' : 'none';
             document.getElementById('view-accounting').style.display = tabName === 'accounting' ? 'block' : 'none';
             document.getElementById('view-tickets').style.display = tabName === 'tickets' ? 'block' : 'none';
-            document.getElementById('view-coupons').style.display = tabName === 'coupons' ? 'block' : 'none'; // 新增切換邏輯
+            document.getElementById('view-coupons').style.display = tabName === 'coupons' ? 'block' : 'none';
             
             document.getElementById('dateNav').style.display = tabName === 'itinerary' ? 'flex' : 'none';
             document.getElementById('shopNav').style.display = tabName === 'shopping' ? 'flex' : 'none';
@@ -382,6 +384,16 @@
                 img.src = event.target.result;
             }
             reader.readAsDataURL(file);
+        }
+
+        // ★ 新增：將 DataURL 安全轉為 Blob，解決上傳卡死問題的救星
+        function dataURLtoBlob(dataurl) {
+            let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], {type:mime});
         }
 
         // === 行程頁面：自動化注入「導航」、「日記」與「刪除照片」 ===
@@ -443,7 +455,7 @@
                     if(e.target.files[0]) {
                         compressAndSaveImage(e.target.files[0], (dataUrl) => {
                             imgPreview.src = dataUrl; imgPreview.style.display = 'block'; deleteBtn.style.display = 'flex';
-                            try { localStorage.setItem(`diary_img_${index}`, dataUrl); } catch (err) { alert('手機暫存空間已滿！'); }
+                            try { localStorage.setItem(`diary_img_${index}`, dataUrl); } catch (err) { alert('手機暫存空間已滿！請清理一下空間'); }
                         });
                     }
                 });
@@ -557,6 +569,7 @@
             setTimeout(() => document.getElementById(`custom-diary-${id}`).style.display = 'block', 500); 
         }
 
+        // ★ 核心修復：Firebase 自訂行程圖片上傳 (轉為 Blob 防止卡死，並加入錯誤提示)
         window.handleCustomSpotImgUpload = function(event, id) {
             const file = event.target.files[0];
             if(!file) return;
@@ -567,13 +580,15 @@
                 document.getElementById(`custom-img-preview-${id}`).style.display = 'block';
                 
                 try {
+                    const blob = dataURLtoBlob(dataUrl);
                     const storageRef = ref(storage, `custom_itinerary_images/${id}_${Date.now()}.jpg`);
-                    await uploadString(storageRef, dataUrl, 'data_url');
+                    await uploadBytes(storageRef, blob);
                     const downloadURL = await getDownloadURL(storageRef);
                     await updateDoc(doc(db, "tokyo_custom_itinerary", id), { img: downloadURL });
                     document.getElementById(`btn-del-custom-img-${id}`).style.display = 'flex';
                 } catch(error) {
-                    alert("上傳失敗，請確認 Firebase Storage 權限！");
+                    console.error(error);
+                    alert("上傳失敗！\n可能是 Firebase Storage 規則未開放，錯誤詳情：" + error.message);
                 } finally {
                     document.getElementById(`uploading-text-custom-${id}`).style.display = 'none';
                 }
@@ -592,7 +607,7 @@
         }
 
 
-        // === FIREBASE 雲端必買清單邏輯 (使用獨立集合 tokyo_shopping) ===
+        // === FIREBASE 雲端必買清單邏輯 ===
         const shopCategories = ['東京車站', 'LOFT', '富士山', '澀谷', '新宿', '羽田機場', '原宿', '淺草'];
         window.currentShopCat = shopCategories[0];
         let shoppingData = {}; 
@@ -635,7 +650,6 @@
         
         onSnapshot(qShop, async (snapshot) => {
             if(isFirstLoad && snapshot.empty) {
-                console.log("寫入預設資料中...");
                 for(const item of defaultShoppingData) {
                     await addDoc(collection(db, "tokyo_shopping"), {
                         category: item.cat, name: item.name, mapLink: item.mapLink, igLink: '', text: '', img: '', createdAt: serverTimestamp()
@@ -749,6 +763,7 @@
             await updateDoc(doc(db, "tokyo_shopping", id), { text: value });
         }
 
+        // ★ 核心修復：Firebase 必買清單圖片上傳 (轉為 Blob 防止卡死，並加入錯誤提示)
         window.handleShopImageUpload = function(event, id) {
             const file = event.target.files[0];
             if(!file) return;
@@ -760,13 +775,15 @@
                 document.getElementById(`shop-img-preview-${id}`).style.display = 'block';
                 
                 try {
+                    const blob = dataURLtoBlob(dataUrl);
                     const storageRef = ref(storage, `shopping_images/${id}_${Date.now()}.jpg`);
-                    await uploadString(storageRef, dataUrl, 'data_url');
+                    await uploadBytes(storageRef, blob);
                     const downloadURL = await getDownloadURL(storageRef);
                     await updateDoc(doc(db, "tokyo_shopping", id), { img: downloadURL });
                     document.getElementById(`btn-del-shop-img-${id}`).style.display = 'flex';
                 } catch(error) {
-                    alert("上傳失敗，請確認 Firebase Storage 權限是否開啟！");
+                    console.error(error);
+                    alert("上傳失敗！\n可能是 Firebase Storage 規則未開放，錯誤詳情：" + error.message);
                 } finally {
                     document.getElementById(`uploading-text-${id}`).style.display = 'none';
                 }
