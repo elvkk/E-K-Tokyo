@@ -52,14 +52,14 @@
         .tag { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; color: white; display: inline-block; margin-bottom: 4px; margin-right: 4px;}
         .tag.food { background-color: var(--tag-food); } .tag.menu { background-color: var(--tag-menu); } .tag.souvenir { background-color: var(--tag-souvenir); } .tag.booking { background-color: var(--tag-booking); }
         
-        /* 底部五格導航 */
+        /* 底部六格導航 */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); z-index: 100; }
         .nav-item { text-align: center; color: var(--text-sub); font-size: 0.65rem; cursor: pointer; flex: 1; } .nav-item.active { color: var(--primary); font-weight: 600; } .nav-icon { font-size: 1.3rem; display: block; margin-bottom: 2px; }
 
         /* 記帳本樣式 */
         .accounting-panel{padding:20px;}.summary-card{background:var(--primary);color:white;padding:20px;border-radius:16px;margin-bottom:20px;text-align:center;box-shadow:0 4px 15px rgba(155,133,121,0.3);}.total-amount{font-size:2rem;font-family:serif;margin:10px 0;}.balance-info{font-size:0.9rem;background:rgba(255,255,255,0.2);padding:8px;border-radius:8px;}.add-expense-form{background:#FFF;padding:15px;border-radius:12px;margin-bottom:20px;border:1px solid var(--border);}.form-group{margin-bottom:12px;}.form-group label{display:block;font-size:0.8rem;color:var(--text-sub);margin-bottom:5px;}.form-group input,.form-group select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:1rem;-webkit-appearance:none;}.btn-submit{width:100%;padding:12px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:1rem;font-weight:bold; cursor: pointer;}.expense-item{background:#FFF;padding:12px;border-radius:8px;border-bottom:1px solid #F0F0F0;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}.exp-detail{display:flex;flex-direction:column;}.exp-title{font-weight:600;font-size:0.95rem;}.exp-meta{font-size:0.75rem;color:var(--text-sub);margin-top:2px;}.exp-price{font-weight:bold;font-family:monospace;font-size:1.1rem;}
         
-        /* 票券庫專屬樣式 */
+        /* 票券庫與優惠券專屬樣式 */
         .ticket-list { padding: 20px; }
         .ticket-item { display: flex; align-items: center; gap: 15px; padding: 16px; background: #FFF; border-radius: 12px; text-decoration: none; color: var(--text-main); margin-bottom: 12px; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .ticket-item:active { background: #F5F5F7; }
@@ -67,6 +67,10 @@
         .ticket-text { display: flex; flex-direction: column; }
         .ticket-name { font-weight: 600; font-size: 1rem; }
         .ticket-sub { font-size: 0.75rem; color: var(--text-sub); margin-top: 4px; }
+        
+        .coupon-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 20px; }
+        .coupon-btn { background: #FFF; border: 1px solid var(--border); border-radius: 12px; padding: 20px 10px; text-align: center; color: var(--text-main); text-decoration: none; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.04); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem;}
+        .coupon-btn:active { background: #F5F5F7; }
 
         /* 行程導航與日記功能樣式 */
         .spot-actions { display: flex; gap: 10px; margin-top: 15px; border-top: 1px dashed #E5E5EA; padding-top: 12px; justify-content: flex-end; align-items: stretch; }
@@ -100,6 +104,8 @@
         <div class="nav-slider-item" onclick="showDay('d5', this)"><div class="date-day">WED</div><div class="date-num">01</div></div>
         <div class="nav-slider-item" onclick="showDay('d6', this)"><div class="date-day">THU</div><div class="date-num">02</div></div>
         <div class="nav-slider-item" onclick="showDay('d7', this)"><div class="date-day">FRI</div><div class="date-num">03</div></div>
+        <div class="nav-slider-item" onclick="showDay('d8', this)"><div class="date-day">SAT</div><div class="date-num">04</div></div>
+        <div class="nav-slider-item" onclick="showDay('d9', this)"><div class="date-day">SUN</div><div class="date-num">05</div></div>
     </div>
 
     <div class="top-nav-slider" id="shopNav" style="display: none;"></div>
@@ -191,6 +197,30 @@
                 <div class="stop"><div class="time">17:30</div><div class="spot-card"><div class="subway bg-walk">🚶 步行</div><div class="spot-title">魚見亭</div><div class="guide-box"><span class="tag food">必吃海鮮</span> 位於江之島上，吹海風看絕美夕陽！</div></div></div>
             </div>
         </div>
+        
+        <div id="d8" class="tab-content">
+            <div class="day-header"><div class="day-title">Day 8｜自由新增行程</div><div class="weather-box" id="w-d8"></div></div>
+            <div style="padding: 15px;">
+                <div class="add-expense-form" style="margin-bottom: 0;">
+                    <div class="form-group"><input type="text" id="spot-name-d8" placeholder="📍 輸入地點名稱 (例: 淺草寺)"></div>
+                    <div class="form-group"><input type="text" id="spot-map-d8" placeholder="🗺️ 輸入 Google Map 連結"></div>
+                    <button class="btn-submit" onclick="addCustomSpot('d8')">➕ 新增至今日行程</button>
+                </div>
+            </div>
+            <div class="timeline" id="timeline-d8" style="padding-top: 5px;"></div>
+        </div>
+
+        <div id="d9" class="tab-content">
+            <div class="day-header"><div class="day-title">Day 9｜自由新增行程</div><div class="weather-box" id="w-d9"></div></div>
+            <div style="padding: 15px;">
+                <div class="add-expense-form" style="margin-bottom: 0;">
+                    <div class="form-group"><input type="text" id="spot-name-d9" placeholder="📍 輸入地點名稱 (例: 羽田機場)"></div>
+                    <div class="form-group"><input type="text" id="spot-map-d9" placeholder="🗺️ 輸入 Google Map 連結"></div>
+                    <button class="btn-submit" onclick="addCustomSpot('d9')">➕ 新增至今日行程</button>
+                </div>
+            </div>
+            <div class="timeline" id="timeline-d9" style="padding-top: 5px;"></div>
+        </div>
     </div>
 
     <div id="view-maps" style="display: none; padding: 20px;">
@@ -254,12 +284,33 @@
         <div class="timeline" id="shopping-list-container" style="padding-top: 0;"></div>
     </div>
 
+    <div id="view-coupons" style="display: none;">
+        <div class="day-title" style="text-align: center; margin: 25px 0 10px;">🏷️ 專屬優惠券</div>
+        <div class="coupon-grid">
+            <a href="BigCamera.jpg" target="_blank" class="coupon-btn">🎫 BigCamera</a>
+            <a href="COSMOS.jpg" target="_blank" class="coupon-btn">🎫 科摩思 COSMOS</a>
+            <a href="LALA PORT.jpg" target="_blank" class="coupon-btn">🎫 LALA PORT</a>
+            <a href="SUGI藥妝.jpg" target="_blank" class="coupon-btn">🎫 SUGI藥妝</a>
+            <a href="welcia.jpg" target="_blank" class="coupon-btn">🎫 welcia</a>
+            <a href="大丸百貨.jpg" target="_blank" class="coupon-btn">🎫 大丸百貨</a>
+            <a href="大國藥妝.jpg" target="_blank" class="coupon-btn">🎫 大國藥妝</a>
+            <a href="山田電機.jpg" target="_blank" class="coupon-btn">🎫 山田電機</a>
+            <a href="多慶屋.jpg" target="_blank" class="coupon-btn">🎫 多慶屋</a>
+            <a href="松本清.jpg" target="_blank" class="coupon-btn">🎫 松本清</a>
+            <a href="唐吉軻德.jpg" target="_blank" class="coupon-btn">🎫 唐吉軻德</a>
+            <a href="銀座樂天.jpg" target="_blank" class="coupon-btn">🎫 銀座樂天</a>
+            <a href="愛電王.jpg" target="_blank" class="coupon-btn">🎫 愛電王</a>
+        </div>
+        <p style="text-align:center; font-size:0.8rem; color:var(--text-sub); margin-bottom:30px;">💡 點擊按鈕即可打開對應的優惠券大圖</p>
+    </div>
+
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-itinerary" onclick="switchMainTab('itinerary')"><span class="nav-icon">🗺️</span>行程</div>
         <div class="nav-item" id="nav-maps" onclick="switchMainTab('maps')"><span class="nav-icon">📍</span>導航</div>
         <div class="nav-item" id="nav-shopping" onclick="switchMainTab('shopping')"><span class="nav-icon">🛍️</span>必買</div>
         <div class="nav-item" id="nav-accounting" onclick="switchMainTab('accounting')"><span class="nav-icon">💰</span>記帳本</div>
         <div class="nav-item" id="nav-tickets" onclick="switchMainTab('tickets')"><span class="nav-icon">🎫</span>票券</div>
+        <div class="nav-item" id="nav-coupons" onclick="switchMainTab('coupons')"><span class="nav-icon">🏷️</span>優惠</div>
     </div>
 
     <script type="module">
@@ -296,6 +347,7 @@
             document.getElementById('view-shopping').style.display = tabName === 'shopping' ? 'block' : 'none';
             document.getElementById('view-accounting').style.display = tabName === 'accounting' ? 'block' : 'none';
             document.getElementById('view-tickets').style.display = tabName === 'tickets' ? 'block' : 'none';
+            document.getElementById('view-coupons').style.display = tabName === 'coupons' ? 'block' : 'none'; // 新增切換邏輯
             
             document.getElementById('dateNav').style.display = tabName === 'itinerary' ? 'flex' : 'none';
             document.getElementById('shopNav').style.display = tabName === 'shopping' ? 'flex' : 'none';
@@ -406,6 +458,137 @@
                 diaryBtn.addEventListener('click', () => diaryArea.style.display = diaryArea.style.display === 'none' ? 'block' : 'none');
             });
         });
+
+        // === FIREBASE 動態自訂行程邏輯 (Day 8 / Day 9) ===
+        let customItineraryData = { d8: [], d9: [] };
+        const qCustomItin = query(collection(db, "tokyo_custom_itinerary"), orderBy("createdAt", "asc"));
+        
+        onSnapshot(qCustomItin, (snapshot) => {
+            customItineraryData = { d8: [], d9: [] };
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                if(customItineraryData[data.day]) {
+                    customItineraryData[data.day].push({ id: doc.id, ...data });
+                }
+            });
+            renderCustomItinerary('d8');
+            renderCustomItinerary('d9');
+        });
+
+        window.renderCustomItinerary = function(day) {
+            const container = document.getElementById(`timeline-${day}`);
+            if(!container) return;
+            container.innerHTML = '';
+            const items = customItineraryData[day] || [];
+
+            if(items.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-sub);">目前還沒有任何行程喔！<br>趕快在上方新增吧 👇</div>`;
+                return;
+            }
+
+            items.forEach((item) => {
+                const mapUrl = item.mapLink ? item.mapLink : `https://www.google.com/maps/search/?api=1&query=$${encodeURIComponent(item.name + ' 東京')}`;
+
+                const card = document.createElement('div');
+                card.className = 'stop';
+                card.innerHTML = `
+                    <div class="spot-card" style="margin-bottom: 0;">
+                        <div class="spot-title">
+                            ${item.name}
+                            <button onclick="deleteCustomSpot('${item.id}', '${item.img}')" style="background:none; border:none; color:#E53935; font-size:1.1rem; cursor:pointer; padding:5px;">🗑️</button>
+                        </div>
+                        
+                        <div class="spot-actions" style="margin-top:10px; align-items: stretch;">
+                            <button class="btn-action btn-diary" onclick="toggleCustomSpotDiary('${item.id}')">📷 紀錄 / 編輯</button>
+                            <a class="btn-action btn-map-quick" href="${mapUrl}" target="_blank">🗺️ 導航</a>
+                        </div>
+
+                        <div class="diary-area" id="custom-diary-${item.id}" style="display:none; margin-top:10px;">
+                            <label style="font-size:0.75rem; color:var(--text-sub); display:block; margin-bottom:5px;">📍 Google Map 連結</label>
+                            <input type="text" value="${item.mapLink || ''}" onchange="updateCustomSpotMapLink('${item.id}', this.value)" placeholder="修改地圖連結..." style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; font-size:0.9rem;">
+                            
+                            <div class="file-upload-wrapper">
+                                <div class="upload-container">
+                                    <div class="btn-upload">📎 新增照片</div>
+                                    <input type="file" accept="image/*" onchange="handleCustomSpotImgUpload(event, '${item.id}')">
+                                </div>
+                                <div class="btn-delete-photo" id="btn-del-custom-img-${item.id}" style="display:${item.img ? 'flex' : 'none'};" onclick="deleteCustomSpotImage('${item.id}', '${item.img}')">🗑️ 移除</div>
+                            </div>
+                            <div style="text-align:center; font-size:0.7rem; color:#888; display:none;" id="uploading-text-custom-${item.id}">照片上傳雲端中，請稍候...⏳</div>
+                            <img class="diary-img-preview" id="custom-img-preview-${item.id}" src="${item.img || ''}" style="display:${item.img ? 'block' : 'none'};">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.addCustomSpot = async function(day) {
+            const nameEl = document.getElementById(`spot-name-${day}`);
+            const mapEl = document.getElementById(`spot-map-${day}`);
+            const name = nameEl.value.trim();
+            const mapLink = mapEl.value.trim();
+            if(!name) return alert("請輸入地點名稱！");
+            
+            await addDoc(collection(db, "tokyo_custom_itinerary"), {
+                day: day, name: name, mapLink: mapLink, img: '', createdAt: serverTimestamp()
+            });
+            nameEl.value = ''; mapEl.value = '';
+        }
+
+        window.toggleCustomSpotDiary = function(id) {
+            const area = document.getElementById(`custom-diary-${id}`);
+            area.style.display = area.style.display === 'none' ? 'block' : 'none';
+        }
+
+        window.deleteCustomSpot = async function(id, imgUrl) {
+            if(confirm('確定要刪除這個行程嗎？')) {
+                if(imgUrl && imgUrl.startsWith('http')) {
+                    try { await deleteObject(ref(storage, imgUrl)); } catch(e) { console.log('刪除照片失敗'); }
+                }
+                await deleteDoc(doc(db, "tokyo_custom_itinerary", id));
+            }
+        }
+
+        window.updateCustomSpotMapLink = async function(id, value) {
+            await updateDoc(doc(db, "tokyo_custom_itinerary", id), { mapLink: value });
+            setTimeout(() => document.getElementById(`custom-diary-${id}`).style.display = 'block', 500); 
+        }
+
+        window.handleCustomSpotImgUpload = function(event, id) {
+            const file = event.target.files[0];
+            if(!file) return;
+            document.getElementById(`uploading-text-custom-${id}`).style.display = 'block';
+
+            compressAndSaveImage(file, async (dataUrl) => {
+                document.getElementById(`custom-img-preview-${id}`).src = dataUrl;
+                document.getElementById(`custom-img-preview-${id}`).style.display = 'block';
+                
+                try {
+                    const storageRef = ref(storage, `custom_itinerary_images/${id}_${Date.now()}.jpg`);
+                    await uploadString(storageRef, dataUrl, 'data_url');
+                    const downloadURL = await getDownloadURL(storageRef);
+                    await updateDoc(doc(db, "tokyo_custom_itinerary", id), { img: downloadURL });
+                    document.getElementById(`btn-del-custom-img-${id}`).style.display = 'flex';
+                } catch(error) {
+                    alert("上傳失敗，請確認 Firebase Storage 權限！");
+                } finally {
+                    document.getElementById(`uploading-text-custom-${id}`).style.display = 'none';
+                }
+            });
+        }
+
+        window.deleteCustomSpotImage = async function(id, imgUrl) {
+            if(confirm('確定要從雲端移除這張照片嗎？')) {
+                document.getElementById(`custom-img-preview-${id}`).style.display = 'none';
+                document.getElementById(`btn-del-custom-img-${id}`).style.display = 'none';
+                if(imgUrl && imgUrl.startsWith('http')) {
+                    try { await deleteObject(ref(storage, imgUrl)); } catch(e) {}
+                }
+                await updateDoc(doc(db, "tokyo_custom_itinerary", id), { img: '' });
+            }
+        }
+
 
         // === FIREBASE 雲端必買清單邏輯 (使用獨立集合 tokyo_shopping) ===
         const shopCategories = ['東京車站', 'LOFT', '富士山', '澀谷', '新宿', '羽田機場', '原宿', '淺草'];
@@ -682,7 +865,7 @@
             }
         }
 
-        // === 氣象邏輯 (修正版) ===
+        // === 氣象邏輯 (修正版支援至 4/5) ===
         async function fetchLiveWeather() {
             try {
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.5021,35.6895&longitude=138.7690,139.6917&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&forecast_days=16');
@@ -697,8 +880,8 @@
                     return `${icon} ${Math.round(locData.temperature_2m_min[idx])}° - ${Math.round(locData.temperature_2m_max[idx])}°C`;
                 }
 
-                const days = ['d1','d2','d3','d4','d5','d6','d7'];
-                const dates = ['2026-03-28','2026-03-29','2026-03-30','2026-03-31','2026-04-01','2026-04-02','2026-04-03'];
+                const days = ['d1','d2','d3','d4','d5','d6','d7','d8','d9'];
+                const dates = ['2026-03-28','2026-03-29','2026-03-30','2026-03-31','2026-04-01','2026-04-02','2026-04-03','2026-04-04','2026-04-05'];
                 
                 days.forEach((day, i) => {
                     const weatherEl = document.getElementById(`w-${day}`);
